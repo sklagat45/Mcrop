@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Mcrop</string>
+    <string name="username">username</string>
+    <string name="password">password</string>
+    <string name="Register">Register</string>
+    <string name="category">category</string>
+        <string name="product_prompt">Choose the Product Type</string>
+
+        <string-array name="product_arrays">
+            <item>Vegetables</item>
+            <item>Fruits</item>
+
+        </string-array>
+
+
+
+</resources>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="margin_average">10dp</dimen>
+    <dimen name="image_logo_login_width">107dp</dimen>
+    <dimen name="image_logo_login_height">117dp</dimen>
+    <dimen name="image_logo_avatar_size">118dp</dimen>
+    <dimen name="image_logo_splash_screen">112dp</dimen>
+    <dimen name="padding_normal">16dp</dimen>
+    <dimen name="padding_average">12dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="margin_normal_fab">8dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="margin_small_mid">6dp</dimen>
+    <dimen name="margin_smallest">4dp</dimen>
+    <dimen name="layout_marginStart">2dp</dimen>
+    <dimen name="layout_marginEnd">32dp</dimen>
+    <dimen name="card_view_padding">8dp</dimen>
+    <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_smallest">4dp</dimen>
+    <dimen name="image_logo_avatar_size_big">180dp</dimen>
+    <dimen name="item_offset">2dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="edit_box_height">48dp</dimen>
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="location_avatar_size">145dp</dimen>
+    <dimen name="location_success_avatar_size">130dp</dimen>
+    <dimen name="location_success_avatar_size_small">90dp</dimen>
+    <dimen name="design_fab_image_size" tools:override="true">58dp</dimen>
+</resources>
+
