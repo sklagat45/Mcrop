@@ -1,6 +1,7 @@
 package com.sklagat46.mcrop.ui;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -13,10 +14,7 @@ import android.widget.Spinner;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sklagat46.mcrop.R;
-
-import java.net.URL;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -46,43 +44,25 @@ public class AddStockActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivity(intent, CAMERA_REQUEST_CODE);
-                // get an image from the camera
-                mCamera.takePicture(null, null, picture);
+                startActivityForResult(intent,0);
+
             }
-        );
-    }
 
+    });
+
+
+
+
+
+
+
+    }
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, data);
-        if (requestCode == CAMERA_REQUEST_CODE && RESULT_OK) {
-            Url url = data.getData();
-        }
-    }
-};
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        Bitmap bitmap = (Bitmap)data.getExtras().get("data");
 
-//        //addListenerOnButton();
-//        databaseUserProfile = FirebaseDatabase.getInstance().getReference("userProfile");
-//        mCamera = getameraInstance();
-//        public static Camera getCameraInstance(){
-//            Camera c = null;
-//            try {
-//                c = Camera.open(); // attempt to get a Camera instance
-//            }
-//            catch (Exception e){
-//                // Camera is not available (in use or does not exist)
-//
-//        }
-//
-//
-//    }
-//
-//
-//    private Camera getameraInstance() {
-//    }
-//
-//    public void takePicture(View view) {
-//
-//
-//    }}
+    }
+
+
+}
