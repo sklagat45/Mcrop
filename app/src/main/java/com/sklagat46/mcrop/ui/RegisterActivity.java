@@ -22,7 +22,6 @@ import com.sklagat46.mcrop.views.UserProfile;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText username, residence, phoneNumber, userEmail, userpassword;
@@ -31,8 +30,6 @@ public class RegisterActivity extends AppCompatActivity {
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
     String Username, Residence, PhoneNumber, Email, password;
-
-
     DatabaseReference databaseUserProfile;
 
     @Override
@@ -55,10 +52,6 @@ public class RegisterActivity extends AppCompatActivity {
         signup = (Button) findViewById(R.id.signupBtn);
         signin = (Button) findViewById(R.id.signinBtn);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-
-
-
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,9 +104,6 @@ public class RegisterActivity extends AppCompatActivity {
                     databaseUserProfile.child(id).setValue(userProfile);
 
                     Toast.makeText(getApplicationContext(), "user added", Toast.LENGTH_SHORT).show();
-
-
-
                 }
 
                 Task<AuthResult> authResultTask = auth.createUserWithEmailAndPassword(Email, Userpassword)
@@ -147,31 +135,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     startActivity(new Intent(RegisterActivity.this, com.sklagat46.mcrop.ui.LoginActivity.class
                                     ));
-
-
                                     finish();
-
                                 }
-
-
                                 progressBar.setVisibility(View.VISIBLE);
                             }
-
                             //create user
-
-
                         });
             }
-
-
-
     @Override
-
     protected void onResume() {
-
         super.onResume();
-
-
         progressBar.setVisibility(View.GONE);}
 
 

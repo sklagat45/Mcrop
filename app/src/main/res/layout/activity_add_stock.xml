@@ -33,29 +33,13 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Spinner
-                android:id="@+id/productSp"
-                android:layout_width="310dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:entries="@array/product_arrays"
-                android:prompt="@string/product_prompt"
-                app:layout_constraintBottom_toTopOf="@+id/descriptionETxt"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.282"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productETxt"
-                app:layout_constraintVertical_bias="0.0" />
-
             <EditText
                 android:id="@+id/productNameETxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:ems="10"
@@ -64,7 +48,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.132"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productSp" />
+                app:layout_constraintTop_toBottomOf="@+id/productETxt" />
 
             <EditText
                 android:id="@+id/locationETxt"
@@ -120,11 +104,12 @@
                 <ImageView
                     android:id="@+id/imgv_photo"
                     android:layout_width="140dp"
-                    android:layout_height="150dp"
+                    android:layout_height="123dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0.65"
                     android:adjustViewBounds="true"
                     android:background="@drawable/comment_textarea"
+                    android:contentDescription="TODO"
                     android:ems="10"
                     android:gravity="top|center_horizontal"
                     android:padding="0dp"
@@ -165,14 +150,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="44dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="doneBtn"
                 android:text="DONE"
                 android:textColor="@color/forgot_password"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:onClick="doneBtn"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.973"
                 app:layout_constraintStart_toStartOf="parent"
