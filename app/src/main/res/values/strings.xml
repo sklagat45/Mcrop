@@ -4,14 +4,13 @@
     <string name="password">password</string>
     <string name="Register">Register</string>
     <string name="category">category</string>
-        <string name="product_prompt">Choose the Product Type</string>
+    <string name="product_prompt">Choose the Product Type</string>
 
-        <string-array name="product_arrays">
-            <item>Vegetables</item>
-            <item>Fruits</item>
+    <string-array name="product_arrays">
+        <item>Vegetables</item>
+        <item>Fruits</item>
 
-        </string-array>
-
+    </string-array>
 
 
 </resources>

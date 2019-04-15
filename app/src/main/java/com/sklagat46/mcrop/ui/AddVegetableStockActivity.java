@@ -60,7 +60,7 @@ import androidx.loader.content.Loader;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddStockActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddVegetableStockActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private EditText productName, location, description;
     private Spinner productType, vegetable, fruit;
@@ -103,7 +103,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_stock);
+        setContentView(R.layout.activity_add_vegetable_stock);
         ButterKnife.bind(this);
         FirebaseAuth auth;
         storage = FirebaseStorage.getInstance();
@@ -125,14 +125,14 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                     File imageFile;
                     try {
                         imageFile = createImageFile();
-                        SharedPreferenceManager.saveTemporaryImagePath(AddStockActivity.this, imageFile.getAbsolutePath());
+                        SharedPreferenceManager.saveTemporaryImagePath(AddVegetableStockActivity.this, imageFile.getAbsolutePath());
                         invokeCamera(imageFile);
                     } catch (IOException e) {
-                        Toast.makeText(AddStockActivity.this, "An error occurred",
+                        Toast.makeText(AddVegetableStockActivity.this, "An error occurred",
                                 Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    Toast.makeText(AddStockActivity.this,
+                    Toast.makeText(AddVegetableStockActivity.this,
                             "There is no camera app installed on your phone.",
                             Toast.LENGTH_LONG).show();
                 }
@@ -199,7 +199,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                 selectedImageUri = data.getData();
                 onLoadFinishedCalled = false;
                 this.getSupportLoaderManager().restartLoader(
-                        IMAGE_LOADER_ID, null, AddStockActivity.this);
+                        IMAGE_LOADER_ID, null, AddVegetableStockActivity.this);
                 img_photo.setVisibility(View.VISIBLE);
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 //img_photo.setVisibility(View.GONE);
@@ -277,7 +277,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(AddStockActivity.this, selectedImageUri, PROJECTION,
+        return new CursorLoader(AddVegetableStockActivity.this, selectedImageUri, PROJECTION,
                 null, null, null);
     }
 
@@ -305,7 +305,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                                 // where id is equal to
                                 String sel = MediaStore.Images.Media._ID + "=?";
 
-                                Cursor cursor = AddStockActivity.this
+                                Cursor cursor = AddVegetableStockActivity.this
                                         .getContentResolver()
                                         .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                                 column, sel, new String[]{id},
@@ -327,7 +327,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                             }
                         } else {
                             String[] projection = {MediaStore.Images.Media.DATA};
-                            Cursor cursor = AddStockActivity.this.getContentResolver()
+                            Cursor cursor = AddVegetableStockActivity.this.getContentResolver()
                                     .query(selectedImageUri, projection, null,
                                             null, null);
                             selectedImagePath = selectedImageUri.getPath();
@@ -345,12 +345,12 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                             decodeFile(selectedImagePath);
                             file = new File(selectedImagePath);
                         } else {
-                            Toast.makeText(AddStockActivity.this,
+                            Toast.makeText(AddVegetableStockActivity.this,
                                     "Could not retrieve the selected image",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        Toast.makeText(AddStockActivity.this,
+                        Toast.makeText(AddVegetableStockActivity.this,
                                 "Could not retrieve the selected image",
                                 Toast.LENGTH_LONG).show();
                         Log.e(e.getClass().getName(), e.getMessage(), e);
@@ -389,14 +389,14 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddStockActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddVegetableStockActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddStockActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddVegetableStockActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -416,7 +416,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
 
         public InvokeCameraTask(File imageFile) {
             this.imageFile = imageFile;
-            progressDialog = new ProgressDialog(AddStockActivity.this);
+            progressDialog = new ProgressDialog(AddVegetableStockActivity.this);
             progressDialog.setMessage("Loading...");
         }
 

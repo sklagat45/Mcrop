@@ -23,20 +23,27 @@
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/sellFab"
+    <com.robertlevonyan.views.customfloatingactionbutton.FloatingActionButton
+        android:id="@+id/btnAddStockTransfer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:clickable="true"
-        android:padding="16dp"
         android:layout_gravity="bottom|end"
-        app:backgroundTint="@color/common_google_signin_btn_text_dark_pressed"
-        app:fabSize="auto"
-        app:srcCompat="@drawable/sell_button"
-        android:focusable="true" />
+        android:onClick="btnAddFru"
+        app:backgroundTint="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        app:fabColor="#acdace"
+        app:fabElevation="5dp"
+        app:fabIcon="@drawable/ic_add_black_24dp"
+        app:fabIconColor="@color/black"
+        app:fabIconPosition="start"
+        app:fabSizes="mini"
+        app:fabText="Add Fruit"
+        app:fabTextAllCaps="false"
+        app:fabType="circle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_alignParentEnd="true" />
 
 
 

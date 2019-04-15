@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@drawable/mcrop_logo"
@@ -16,7 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.AddStockActivity"></activity>
+        <activity android:name=".ui.DemandGraphActivity"></activity>
+        <activity android:name=".ui.AddFruitStockActivity" />
+        <activity android:name=".ui.AddVegetableStockActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
