@@ -144,6 +144,7 @@
                         android:layout_alignParentTop="true"
                         android:background="@drawable/btn_bg_white"
                         android:text="CANCEL"
+                        android:onClick="btnCamera"
                         android:textColor="#000000"
                         app:srcCompat="@drawable/icon_camera" />
 
@@ -153,6 +154,7 @@
                         android:layout_height="40dp"
                         android:layout_alignParentTop="true"
                         android:layout_toRightOf="@+id/btn_camera"
+                        android:onClick="btnGallary"
                         android:background="@drawable/btn_bg_white"
                         android:textColor="#000000"
                         app:srcCompat="@drawable/ic_photo_library_black_24px" />

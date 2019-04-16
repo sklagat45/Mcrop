@@ -2,9 +2,7 @@ package com.sklagat46.mcrop.util;
 
 import android.graphics.BitmapFactory;
 
-/**
- * Created by jkirwa on 10/3/16.
- */
+
 public class ImageUtil {
     public static int calculateBitmapInSampleSize(
             BitmapFactory.Options options, int reqWidth, int reqHeight) {
