@@ -1,6 +1,6 @@
 package com.sklagat46.mcrop.ui;
 
-import android.annotation.TargetApi;
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -10,10 +10,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -38,6 +39,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.sklagat46.mcrop.BuildConfig;
 import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.util.Configs;
 import com.sklagat46.mcrop.util.ImageUtil;
@@ -45,15 +47,16 @@ import com.sklagat46.mcrop.util.SharedPreferenceManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.io.FileOutputStream;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NavUtils;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -70,7 +73,9 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     private static final String[] PROJECTION = {MediaStore.Images.Media.DATA};
     private static final int TAKE_PHOTO = 1;
     private static final int PICK_IMAGE = 2;
-    private final int PICK_IMAGE_REQUEST = 3;
+    int PERMISSION_ALL = 1;
+    private File file;
+    private String iname;
     @BindView(R.id.btn_camera)
     ImageButton cameraBtn;
     @BindView(R.id.btn_gallary)
@@ -94,101 +99,86 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     private AlertDialog resultDialog;
     private ProgressDialog progressDialog;
     private SQLiteDatabase db;
+    public static String[] PERMISSIONS_CAMERA = {
+            Manifest.permission.CAMERA,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //private CameraPreview mPreview;
-
     DatabaseReference databaseUserProfile;
     private String selectedImagePath;
-    private File file;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_stock);
+        setContentView(R.layout.activity_add_product);
         ButterKnife.bind(this);
         FirebaseAuth auth;
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
-
-
-        // Add a listener to the Capture button
+        setUpActionBar();
+        //Check Permissions
+        if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            ActivityCompat.requestPermissions(Objects.requireNonNull(this),
+                    PERMISSIONS_CAMERA, PERMISSION_ALL);
+        }
 
         img_photo.setVisibility(View.GONE);
         packageManager = this.getPackageManager();
-        cameraBtn.setOnClickListener(new View.OnClickListener() {
 
-            @TargetApi(Build.VERSION_CODES.ECLAIR)
-            public void onClick(View v) {
-                if (packageManager
-                        .hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
-
-                    File imageFile;
-                    try {
-                        imageFile = createImageFile();
-                        SharedPreferenceManager.saveTemporaryImagePath(AddStockActivity.this, imageFile.getAbsolutePath());
-                        invokeCamera(imageFile);
-                    } catch (IOException e) {
-                        Toast.makeText(AddStockActivity.this, "An error occurred",
-                                Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    Toast.makeText(AddStockActivity.this,
-                            "There is no camera app installed on your phone.",
-                            Toast.LENGTH_LONG).show();
-                }
+        cameraBtn.setOnClickListener(v -> {
+            try {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddStockActivity.this,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        file));
+                int REQUEST_CAMERA = 1;
+                startActivityForResult(intent, REQUEST_CAMERA);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(this, "Camera error1", Toast.LENGTH_SHORT).show();
             }
         });
+        galleryBtn.setOnClickListener((View v) -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
 
-        galleryBtn.setOnClickListener(new View.OnClickListener() {
+            startActivityForResult(
+                    Intent.createChooser(intent, "Pick a source"),
+                    PICK_IMAGE);
 
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-
-                startActivityForResult(
-                        Intent.createChooser(intent, "Pick a source"),
-                        PICK_IMAGE);
-
-            }
         });
-
 
     }
 
-    private File createImageFile() throws IOException {
-        File storagePath = new File(Environment.getExternalStorageDirectory()
-                .getPath() + Configs.IMAGES_DIRECTORY);
-        storagePath.mkdirs();
-
-        Random rand = new Random();
-        String randomStr = Long.toString(Math.abs(rand.nextLong()));
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
-                .format(new Date());
-        String imageFileName = randomStr + timeStamp;
-        File image = File.createTempFile(imageFileName, ".jpg", storagePath);
-
-        // File image = File.createTempFile(imageFileName,
-        // Configs.DEFAULT_IMAGE_EXTENSION, this.getCacheDir());
-
-        return image;
+    private void setUpActionBar() {
+        Drawable upArrow = getResources().getDrawable(R.drawable.ic_chevron_left_white_24dp);
+        toolbar.setNavigationIcon(upArrow);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        onBackPressed();
+        return true;
+    }
+
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
     }
 
-    public void doneBtn(View view) {
+    public void btnSave(View view) {
 
         uploadImage();
     }
 
-    private void invokeCamera(File imageFile) {
-        InvokeCameraTask invokeCameraTask = new InvokeCameraTask(imageFile);
-        invokeCameraTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -201,10 +191,6 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                 this.getSupportLoaderManager().restartLoader(
                         IMAGE_LOADER_ID, null, AddStockActivity.this);
                 img_photo.setVisibility(View.VISIBLE);
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                //img_photo.setVisibility(View.GONE);
-                // Toast.makeText(this, "An error occurred", Toast.LENGTH_LONG)
-                // .show();
             } else {
                 Toast.makeText(this, "An error occurred",
                         Toast.LENGTH_LONG).show();
@@ -212,19 +198,37 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
         } else if (requestCode == TAKE_PHOTO) {
 
             if (resultCode == Activity.RESULT_OK) {
-                try {
-                    String cameraPhotoPath = SharedPreferenceManager.getTemporaryImagePath(this);
 
-                    if (!cameraPhotoPath.equals("")) {
-                        decodeFile(cameraPhotoPath);
-                        img_photo.setVisibility(View.VISIBLE);
-                    } else {
-                        Toast.makeText(this, "An error occurred photopath",
-                                Toast.LENGTH_LONG).show();
-                    }
+                try {
+
+                    Bitmap bitmap;
+
+                    BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+
+                    String picturePath = file.getAbsolutePath();
+                    System.out.println(picturePath + " Picture path in side the Onactivity method");
+
+                    bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
+                            bitmapOptions);
+                    // dest measurements
+                    final int destWidth = 1500;
+                    final int destHeight = 1500;
+
+
+                    imageBitmap = Configs.getResizedBitmap(bitmap, destWidth, destHeight);
+
+                    MediaStore.Images.Media.insertImage(getApplicationContext().getContentResolver(),
+                            imageBitmap,
+                            String.valueOf(System.currentTimeMillis()),
+                            "Description");
+
+
+                    saveImage(imageBitmap);
+                    img_photo.setVisibility(View.VISIBLE);
+                    img_photo.setImageBitmap(imageBitmap);
                 } catch (Exception e) {
-                    Toast.makeText(this, "An error occurred",
-                            Toast.LENGTH_LONG).show();
+                    e.printStackTrace();
+                    Toast.makeText(this, "Camera error", Toast.LENGTH_SHORT).show();
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 //img_photo.setVisibility(View.GONE);
@@ -234,6 +238,54 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    //Save Images to a specific folder
+    public void saveImage(Bitmap finalBitmap) {
+
+        try {
+
+            String root = Environment.getExternalStorageDirectory().toString();
+            System.out.println(root + " Root value in saveImage Function");
+            File myDir = new File(root + "/Soko Yetu/Images/sourcing/invoice");
+
+            if (!myDir.exists()) {
+                myDir.mkdirs();
+            }
+
+            Random generator = new Random();
+            int n = 100000;
+            n = generator.nextInt(n);
+
+            iname = "TFL-" + n + Configs.getCurrentDateTime() + ".jpg";
+            File file = new File(myDir, iname);
+
+            if (file.exists()) {
+                file.delete();
+            }
+            if (file.isFile()) {
+                Log.d("files", " " + file.getPath() + " 2:" + file.getAbsolutePath());
+            }
+
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 60, out);
+            out.flush();
+            out.close();
+
+            // Tell the media scanner about the new file so that it is
+            // immediately available to the user.
+            MediaScannerConnection.scanFile(getApplicationContext(), new String[]{file.toString()}, null,
+                    new MediaScannerConnection.OnScanCompletedListener() {
+                        public void onScanCompleted(String path, Uri uri) {
+                            Log.i("ExternalStorage", "Scanned " + path + ":");
+                            Log.i("ExternalStorage", "-> uri=" + uri);
+                        }
+                    });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void decodeFile(String filePath) {
@@ -285,60 +337,44 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case IMAGE_LOADER_ID:
-                if (onLoadFinishedCalled == false) {
+                if (!onLoadFinishedCalled) {
                     onLoadFinishedCalled = true;
                     try {
                         selectedImagePath = null;
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            if (data != null) {
+                        if (data != null) {
 
-                                String wholeID;
+                            String wholeID;
 
-                                wholeID = DocumentsContract
-                                        .getDocumentId(selectedImageUri);
+                            wholeID = DocumentsContract
+                                    .getDocumentId(selectedImageUri);
 
-                                // Split at colon, use second item in the array
-                                String id = wholeID.split(":")[1];
+                            // Split at colon, use second item in the array
+                            String id = wholeID.split(":")[1];
 
-                                String[] column = {MediaStore.Images.Media.DATA};
+                            String[] column = {MediaStore.Images.Media.DATA};
 
-                                // where id is equal to
-                                String sel = MediaStore.Images.Media._ID + "=?";
+                            // where id is equal to
+                            String sel = MediaStore.Images.Media._ID + "=?";
 
-                                Cursor cursor = AddStockActivity.this
-                                        .getContentResolver()
-                                        .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                                column, sel, new String[]{id},
-                                                null);
+                            Cursor cursor = AddStockActivity.this
+                                    .getContentResolver()
+                                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                            column, sel, new String[]{id},
+                                            null);
 
-                                String filePath = "";
+                            String filePath = "";
 
-                                int columnIndex = cursor.getColumnIndex(column[0]);
+                            int columnIndex = cursor.getColumnIndex(column[0]);
 
-                                if (cursor.moveToFirst()) {
-                                    filePath = cursor.getString(columnIndex);
-                                }
-
-                                cursor.close();
-
-                                selectedImagePath = filePath;
-                            } else {
-                                selectedImagePath = selectedImageUri.getPath();
+                            if (cursor.moveToFirst()) {
+                                filePath = cursor.getString(columnIndex);
                             }
+
+                            cursor.close();
+
+                            selectedImagePath = filePath;
                         } else {
-                            String[] projection = {MediaStore.Images.Media.DATA};
-                            Cursor cursor = AddStockActivity.this.getContentResolver()
-                                    .query(selectedImageUri, projection, null,
-                                            null, null);
                             selectedImagePath = selectedImageUri.getPath();
-                            if (cursor != null) {
-                                int column_index = cursor
-                                        .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                                cursor.moveToFirst();
-                                selectedImagePath = cursor.getString(column_index);
-
-                                cursor.close();
-                            }
                         }
 
                         if (selectedImagePath != null) {
@@ -370,7 +406,10 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -408,6 +447,18 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                         }
                     });
         }
+    }
+
+    public void btnCancel(View view) {
+
+
+    }
+
+    public void btnCamera(View view) {
+
+    }
+
+    public void btnGallary(View view) {
     }
 
     private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {

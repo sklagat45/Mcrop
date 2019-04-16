@@ -1,96 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.AddStockActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:background="#f4f5f7">
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <TextView
+                    android:id="@+id/toolbarTitle"
+                    style="@style/actionBarTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/title_vegetables" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_normal"
+            tools:background="#f4f5f7">
 
             <TextView
                 android:id="@+id/productETxt"
-                android:layout_width="181dp"
+                android:layout_width="match_parent"
                 android:layout_height="26dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="Upload Your Product"
+                android:text="@string/label_add_vegetable_details"
+                android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.112"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textStyle="bold" />
 
-            <Spinner
-                android:id="@+id/productSp"
-                android:layout_width="310dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:entries="@array/product_arrays"
-                android:prompt="@string/product_prompt"
-                app:layout_constraintBottom_toTopOf="@+id/descriptionETxt"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.282"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productETxt"
-                app:layout_constraintVertical_bias="0.0" />
 
             <EditText
-                android:id="@+id/productNameETxt"
+                android:id="@+id/editTextProductName"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="48dp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:ems="10"
-                android:hint="Product Name"
+                android:hint="@string/label_product_name"
                 android:inputType="textPersonName"
+                android:padding="2dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.132"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productSp" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
                 android:id="@+id/locationETxt"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_height="48dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginRight="8dp"
                 android:ems="10"
-                android:hint="Location"
+                android:hint="@string/label_location"
                 android:inputType="textPersonName"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.131"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/productNameETxt" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextProductName" />
 
             <EditText
                 android:id="@+id/descriptionETxt"
                 android:layout_width="414dp"
-                android:layout_height="77dp"
-                android:layout_marginTop="112dp"
+                android:layout_height="79dp"
+                android:layout_marginTop="@dimen/margin_small"
                 android:layout_weight="1"
                 android:ems="10"
-                android:hint="Description/price"
-                android:inputType="textPersonName"
+                android:hint="@string/label_add_description_and_price"
+                android:inputType="textMultiLine"
                 android:padding="20dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/productETxt" />
@@ -106,6 +105,7 @@
                 android:layout_marginRight="5dp"
                 android:layout_weight="0.49"
                 android:orientation="vertical"
+                android:padding="2dp"
                 android:weightSum="1"
                 app:layout_constraintTop_toBottomOf="@+id/descriptionETxt">
 
@@ -115,7 +115,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
-                    android:text="Add Photo" />
+                    android:text="@string/add_photo" />
 
                 <ImageView
                     android:id="@+id/imgv_photo"
@@ -144,6 +144,7 @@
                         android:layout_alignParentTop="true"
                         android:background="@drawable/btn_bg_white"
                         android:text="CANCEL"
+                        android:onClick="btnCamera"
                         android:textColor="#000000"
                         app:srcCompat="@drawable/icon_camera" />
 
@@ -153,36 +154,46 @@
                         android:layout_height="40dp"
                         android:layout_alignParentTop="true"
                         android:layout_toRightOf="@+id/btn_camera"
+                        android:onClick="btnGallary"
                         android:background="@drawable/btn_bg_white"
                         android:textColor="#000000"
                         app:srcCompat="@drawable/ic_photo_library_black_24px" />
                 </RelativeLayout>
             </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/margin_smallest"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
             <Button
-                android:id="@+id/doneBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="60dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginRight="8dp"
-                android:text="DONE"
-                android:textColor="@color/forgot_password"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:onClick="doneBtn"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.973"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/layout_addPhoto"
-                tools:ignore="OnClick" />
+                android:id="@+id/buttonEditBookingDetails"
+                style="@style/allEditButtons"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:layout_weight=".5"
+                android:background="@drawable/bg_edit_button"
+                android:onClick="btnCancel"
+                android:text="@string/cancel"
+                android:textAllCaps="false" />
 
+            <Button
+                android:id="@+id/buttonSaveBooking"
+                style="@style/allSaveButtons"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_weight=".5"
+                android:background="@drawable/bg_blue_button"
+                android:onClick="btnSave"
+                android:text="@string/save"
+                android:textAllCaps="false" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
+        </LinearLayout>
 
     </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>
