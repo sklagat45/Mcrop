@@ -29,7 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
-    String Username, Residence, PhoneNumber, Email, password;
+    //String Username, Residence, PhoneNumber, Email, password;
     DatabaseReference databaseUserProfile;
 
     @Override

@@ -1,6 +1,7 @@
 package com.sklagat46.mcrop.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.listener.CustomItemClickListener;
+import com.sklagat46.mcrop.ui.VegetableMarketActivity;
 import com.sklagat46.mcrop.views.VegetableViews;
 
 import java.util.List;
@@ -37,7 +39,10 @@ public class VegetablesAdapter extends RecyclerView.Adapter<VegetablesAdapter.Me
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 listener.onItemClick(v, mViewHolder.getPosition());
+                Intent intent = new Intent(context, VegetableMarketActivity.class);
+                context.startActivity(intent);
             }
         });
         return mViewHolder;
