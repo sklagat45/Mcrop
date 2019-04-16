@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -53,6 +54,7 @@ import java.util.UUID;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
@@ -99,16 +101,18 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     DatabaseReference databaseUserProfile;
     private String selectedImagePath;
     private File file;
+    @BindView(R.id.btn_camera)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_stock);
+        setContentView(R.layout.activity_add_product);
         ButterKnife.bind(this);
         FirebaseAuth auth;
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-
+        setUpActionBar();
 
 
         // Add a listener to the Capture button
@@ -156,6 +160,14 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
 
     }
 
+    private void setUpActionBar() {
+        Drawable upArrow = getResources().getDrawable(R.drawable.ic_chevron_left_white_24dp);
+        toolbar.setNavigationIcon(upArrow);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
     private File createImageFile() throws IOException {
         File storagePath = new File(Environment.getExternalStorageDirectory()
                 .getPath() + Configs.IMAGES_DIRECTORY);
@@ -180,7 +192,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-    public void btnDone(View view) {
+    public void btnSave(View view) {
 
         uploadImage();
     }
@@ -408,6 +420,11 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                         }
                     });
         }
+    }
+
+    public void btnCancel(View view) {
+
+
     }
 
     private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {
