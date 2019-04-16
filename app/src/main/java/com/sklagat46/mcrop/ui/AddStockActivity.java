@@ -180,7 +180,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-    public void doneBtn(View view) {
+    public void btnDone(View view) {
 
         uploadImage();
     }
