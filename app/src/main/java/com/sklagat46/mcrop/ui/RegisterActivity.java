@@ -56,7 +56,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent startIntent = new Intent(getApplicationContext(), RegisterActivity.class);
-                //show how to pass information to next activity
+                //pass information to next activity
                 startActivity(startIntent);
 
                 finish();
@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent startIntent = new Intent(getApplicationContext(), com.sklagat46.mcrop.ui.LoginActivity.class);
-                //show how to pass information to next activity
+                //pass information to next activity
                 startActivity(startIntent);
             }
         });
@@ -78,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-        //check if everything is field
+        //check if everything is filled
             private void addUserProfile() {
                 String Username = username.getText().toString().trim();
                 String Residence = residence.getText().toString().trim();

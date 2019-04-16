@@ -18,15 +18,14 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,6 +33,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -42,6 +42,7 @@ import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.util.Configs;
 import com.sklagat46.mcrop.util.ImageUtil;
 import com.sklagat46.mcrop.util.SharedPreferenceManager;
+import com.sklagat46.mcrop.views.AddStockViews;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,8 +63,7 @@ import butterknife.ButterKnife;
 
 public class AddVegetableStockActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private EditText productName, location, description;
-    private Spinner productType, vegetable, fruit;
+    //private EditText description;
     private static final int IMAGE_LOADER_ID = 1;
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
@@ -77,9 +77,19 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     ImageButton galleryBtn;
     @BindView(R.id.imgv_photo)
     ImageView img_photo;
+    @BindView(R.id.productNameETxt)
+    EditText productName;
+    @BindView(R.id.locationETxt)
+    EditText location;
+    @BindView(R.id.descriptionETxt)
+    EditText description;
+    @BindView(R.id.doneBtn)
+    EditText done;
+
+    //firebase storage
     FirebaseStorage storage;
     StorageReference storageReference;
-    private Button done;
+    //private Button done;
     //String productName,location,description;
     private Bitmap imageBitmap;
     private String encodedImage = "";
@@ -97,6 +107,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     //private CameraPreview mPreview;
 
     DatabaseReference databaseUserProfile;
+    DatabaseReference databaseVegetableDetails;
     private String selectedImagePath;
     private File file;
 
@@ -108,6 +119,39 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         FirebaseAuth auth;
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        databaseVegetableDetails = FirebaseDatabase.getInstance().getReference("vegetableDetails");
+            //get user instance
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = auth.getCurrentUser();
+
+        done.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addVegetableDetails();
+            }
+        });
+    }
+    //check if everything is filled
+    private void addVegetableDetails() {
+        String ProductName = productName.getText().toString().trim();
+        String Location = location.getText().toString().trim();
+        String Description = description.getText().toString().trim();
+
+
+        //check if everything is field
+        if (TextUtils.isEmpty(ProductName) || TextUtils.isEmpty(Location) || TextUtils.isEmpty(Description) ) {
+
+            Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else {
+
+            String id = databaseVegetableDetails.push().getKey();
+            AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
+            databaseVegetableDetails.child(id).setValue(addStockViews);
+
+            Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
+        }
 
 
 
@@ -227,7 +271,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                             Toast.LENGTH_LONG).show();
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                //img_photo.setVisibility(View.GONE);
+                img_photo.setVisibility(View.GONE);
 
             } else {
                 Toast.makeText(this, "An error occurred",
@@ -285,7 +329,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case IMAGE_LOADER_ID:
-                if (onLoadFinishedCalled == false) {
+                if (!onLoadFinishedCalled) {
                     onLoadFinishedCalled = true;
                     try {
                         selectedImagePath = null;
