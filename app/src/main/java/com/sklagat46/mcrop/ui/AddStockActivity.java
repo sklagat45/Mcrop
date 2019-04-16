@@ -73,7 +73,6 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     private static final String[] PROJECTION = {MediaStore.Images.Media.DATA};
     private static final int TAKE_PHOTO = 1;
     private static final int PICK_IMAGE = 2;
-    private final int PICK_IMAGE_REQUEST = 3;
     int PERMISSION_ALL = 1;
     private File file;
     private String iname;
