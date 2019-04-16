@@ -383,7 +383,7 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("vegetables/" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("fruits/" + UUID.randomUUID().toString());
             ref.putFile(selectedImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -408,6 +408,10 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
                         }
                     });
         }
+    }
+
+    public void cancelBtn(View view) {
+
     }
 
     private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {

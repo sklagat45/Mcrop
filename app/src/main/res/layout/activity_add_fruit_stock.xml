@@ -104,7 +104,7 @@
                 <ImageView
                     android:id="@+id/imgv_photo"
                     android:layout_width="140dp"
-                    android:layout_height="123dp"
+                    android:layout_height="0dp"
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0.65"
                     android:adjustViewBounds="true"
@@ -113,7 +113,8 @@
                     android:ems="10"
                     android:gravity="top|center_horizontal"
                     android:padding="0dp"
-                    android:scaleType="centerCrop" />
+                    android:scaleType="centerCrop"
+                    tools:ignore="ContentDescription" />
 
                 <RelativeLayout
                     android:id="@+id/attach_photo"
@@ -140,7 +141,8 @@
                         android:layout_toRightOf="@+id/btn_camera"
                         android:background="@drawable/btn_bg_white"
                         android:textColor="#000000"
-                        app:srcCompat="@drawable/ic_photo_library_black_24px" />
+                        app:srcCompat="@drawable/ic_photo_library_black_24px"
+                        android:layout_toEndOf="@+id/btn_camera" />
                 </RelativeLayout>
             </LinearLayout>
 
@@ -165,6 +167,29 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/layout_addPhoto"
                 tools:ignore="OnClick" />
+            <Button
+                android:id="@+id/btn_cancel"
+                android:layout_width="131dp"
+                android:layout_height="45dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="cancelBtn"
+                android:text="CANCEL"
+                android:textColor="@color/forgot_password"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/doneBtn"
+                app:layout_constraintHorizontal_bias="0.769"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_addPhoto"
+                app:layout_constraintVertical_bias="1.0"
+                tools:ignore="onClick" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

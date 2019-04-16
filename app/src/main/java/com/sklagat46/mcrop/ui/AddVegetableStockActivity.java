@@ -410,6 +410,9 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
     }
 
+    public void cancelBtn(View view) {
+    }
+
     private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {
         private File imageFile;
         private ProgressDialog progressDialog;
