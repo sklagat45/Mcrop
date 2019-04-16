@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="16dp"
+    android:background="@drawable/bg_app_fruits"
     tools:context=".ui.Home">
 
     <LinearLayout
@@ -28,7 +29,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
-            android:text="Select product Category" />
+            android:text="@string/title_select_product_category" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycleViewCards"

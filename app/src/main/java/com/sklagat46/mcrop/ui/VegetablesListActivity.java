@@ -32,7 +32,7 @@ public class VegetablesListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_vegetable);
+        setContentView(R.layout.activity_vegetable_list);
         ButterKnife.bind(this);
         setupListView();
 

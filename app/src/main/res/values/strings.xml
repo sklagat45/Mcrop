@@ -5,8 +5,9 @@
     <string name="Register">Register</string>
     <string name="category">category</string>
         <string name="product_prompt">Choose the Product Type</string>
+    <string name="title_select_product_category">Select product Category</string>
 
-        <string-array name="product_arrays">
+    <string-array name="product_arrays">
             <item>Vegetables</item>
             <item>Fruits</item>
 
