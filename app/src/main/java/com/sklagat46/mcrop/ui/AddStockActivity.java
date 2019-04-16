@@ -55,7 +55,6 @@ import java.util.UUID;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.NavUtils;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -101,7 +100,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     DatabaseReference databaseUserProfile;
     private String selectedImagePath;
     private File file;
-    @BindView(R.id.btn_camera)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
 
     @Override
@@ -166,6 +165,13 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        onBackPressed();
+        return true;
     }
 
     private File createImageFile() throws IOException {
@@ -382,7 +388,10 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
-                NavUtils.navigateUpFromSameTask(this);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.AddStockActivity"></activity>
+        <activity android:name=".ui.AddStockActivity"
+            />
 
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
