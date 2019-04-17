@@ -77,13 +77,14 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     private File file;
     private String iname;
     @BindView(R.id.btn_camera)
-    ImageButton cameraBtn;
+    ImageButton btnCamera;
     @BindView(R.id.btn_gallary)
-    ImageButton galleryBtn;
+    ImageButton btnGallery;
     @BindView(R.id.imgv_photo)
     ImageView img_photo;
     FirebaseStorage storage;
     StorageReference storageReference;
+    public static Activity activity;
     private Button done;
     //String productName,location,description;
     private Bitmap imageBitmap;
@@ -126,21 +127,27 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
         img_photo.setVisibility(View.GONE);
         packageManager = this.getPackageManager();
 
-        cameraBtn.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddStockActivity.this,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        file));
-                int REQUEST_CAMERA = 1;
-                startActivityForResult(intent, REQUEST_CAMERA);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Camera error1", Toast.LENGTH_SHORT).show();
+        btnCamera.setOnClickListener(v -> {
+            //Check Permissions
+            if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
+                int PERMISSION_ALL = 1;
+                ActivityCompat.requestPermissions(this,PERMISSIONS_CAMERA, PERMISSION_ALL);
+            } else {
+                try {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddStockActivity.this,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            file));
+                    int REQUEST_CAMERA = 1;
+                    startActivityForResult(intent, REQUEST_CAMERA);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(activity, "Camera error1", Toast.LENGTH_SHORT).show();
+                }
             }
         });
-        galleryBtn.setOnClickListener((View v) -> {
+        btnGallery.setOnClickListener((View v) -> {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
