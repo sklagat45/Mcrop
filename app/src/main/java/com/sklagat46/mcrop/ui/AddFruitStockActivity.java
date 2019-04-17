@@ -25,6 +25,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -90,7 +91,7 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     @BindView(R.id.descriptionETxt)
     EditText description;
     @BindView(R.id.buttonSave)
-    EditText btnSave;
+    Button btnSave;
 
 
     FirebaseStorage storage;

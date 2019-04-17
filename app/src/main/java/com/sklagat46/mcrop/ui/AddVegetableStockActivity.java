@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,6 +25,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,12 +46,14 @@ import com.sklagat46.mcrop.views.AddStockViews;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -84,6 +88,8 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     EditText location;
     @BindView(R.id.descriptionETxt)
     EditText description;
+    @BindView(R.id.buttonSave)
+    Button btnSave;
 
 
     FirebaseStorage storage;
@@ -126,6 +132,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
         setUpActionBar();
+        btnSave.setOnClickListener(v -> addVegetableDetails());
 
         //Check Permissions
         if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
@@ -214,7 +221,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     }
 
     public void btnSave(View view) {
-        addVegetableDetails();
         uploadImage();
     }
 
@@ -245,7 +251,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                     BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
                     String picturePath = file.getAbsolutePath();
-                    System.out.println(picturePath + " Picture path in side the Onactivity method");
+                    System.out.println(picturePath + " Picture path in side the On activity method");
 
                     bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
                             bitmapOptions);
@@ -269,9 +275,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                     e.printStackTrace();
                     Toast.makeText(this, "Camera error", Toast.LENGTH_SHORT).show();
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                //img_photo.setVisibility(View.GONE);
-
             } else {
                 Toast.makeText(this, "An error occurred",
                         Toast.LENGTH_LONG).show();
@@ -372,51 +375,67 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                 null, null, null);
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
+
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
             case IMAGE_LOADER_ID:
                 if (!onLoadFinishedCalled) {
                     onLoadFinishedCalled = true;
                     try {
                         selectedImagePath = null;
-                        if (data != null) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            if (data != null) {
 
-                            String wholeID = null;
+                                String wholeID;
 
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+                                // getImageUrlWithAuthority(this,selectedImageUri);
+
                                 wholeID = DocumentsContract
                                         .getDocumentId(selectedImageUri);
+
+                                // Split at colon, use second item in the array
+                                String id = wholeID.split(":")[1];
+
+                                String[] column = {MediaStore.Images.Media.DATA};
+
+                                // where id is equal to
+                                String sel = MediaStore.Images.Media._ID + "=?";
+
+                                Cursor cursor = AddVegetableStockActivity.this
+                                        .getContentResolver()
+                                        .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                                column, sel, new String[]{id},
+                                                null);
+
+                                String filePath = "";
+
+                                int columnIndex = cursor.getColumnIndex(column[0]);
+
+                                if (cursor.moveToFirst()) {
+                                    filePath = cursor.getString(columnIndex);
+                                }
+
+                                cursor.close();
+
+                                selectedImagePath = filePath;
+                            } else {
+                                selectedImagePath = selectedImageUri.getPath();
                             }
-
-                            // Split at colon, use second item in the array
-                            String id = wholeID.split(":")[1];
-
-                            String[] column = {MediaStore.Images.Media.DATA};
-
-
-                            // where id is equal to
-                            String sel = MediaStore.Images.Media._ID + "=?";
-
-                            Cursor cursor = AddVegetableStockActivity.this
-                                    .getContentResolver()
-                                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                            column, sel, new String[]{id},
-                                            null);
-
-                            String filePath = "";
-
-                            int columnIndex = cursor.getColumnIndex(column[0]);
-
-                            if (cursor.moveToFirst()) {
-                                filePath = cursor.getString(columnIndex);
-                            }
-
-                            cursor.close();
-
-                            selectedImagePath = filePath;
                         } else {
+                            String[] projection = {MediaStore.Images.Media.DATA};
+                            Cursor cursor = AddVegetableStockActivity.this.getContentResolver()
+                                    .query(selectedImageUri, projection, null,
+                                            null, null);
                             selectedImagePath = selectedImageUri.getPath();
+                            if (cursor != null) {
+                                int column_index = cursor
+                                        .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                                cursor.moveToFirst();
+                                selectedImagePath = cursor.getString(column_index);
+
+                                cursor.close();
+                            }
                         }
 
                         if (selectedImagePath != null) {
@@ -438,9 +457,30 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    public void onLoaderReset(Loader<Cursor> arg0) {
+        // TODO Auto-generated method stub
 
+    }
+
+    public static String getImageUrlWithAuthority(Context context, Uri uri) {
+        InputStream is = null;
+        if (uri.getAuthority() != null) {
+            try {
+                is = context.getContentResolver().openInputStream(uri);
+                Bitmap bmp = BitmapFactory.decodeStream(is);
+
+                // return writeToTempImageAndGetPathUri(context, bmp).toString();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
     }
 
     @Override
