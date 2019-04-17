@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
-    tools:context=".ui.FruitsListActivity">
+    tools:context=".ui.VegetablesListActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            tools:listitem="@layout/row_fruits_item" />
+            tools:listitem="@layout/row_category_item" />
 
     </LinearLayout>
 
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:onClick="btnAddFru"
+        android:onClick="btnAddVeg"
         app:backgroundTint="@color/colorPrimary"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
@@ -38,16 +38,12 @@
         app:fabIconColor="@color/black"
         app:fabIconPosition="start"
         app:fabSizes="mini"
-        app:fabText="Add Fruit"
+        app:fabText="Add Vegetable"
         app:fabTextAllCaps="false"
         app:fabType="circle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_alignParentEnd="true" />
-
-
-
-
 
 
 </RelativeLayout>

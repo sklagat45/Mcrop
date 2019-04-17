@@ -1,10 +1,10 @@
 package com.sklagat46.mcrop.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.adapter.FruitsAdapter;
 import com.sklagat46.mcrop.listener.CustomItemClickListener;
@@ -96,6 +96,10 @@ public class FruitsListActivity extends AppCompatActivity {
         return fruitList;
 
 
+    }
+    public void btnAddFru(View view) {
+        Intent intent = new Intent(getApplicationContext(), AddFruitStockActivity.class);
+        startActivity(intent);
     }
 
 }

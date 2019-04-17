@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "129299225454-cp3qjkh297f0refk6i37f0nh53ovbn08.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sklagat46.mcrop",
+            "certificate_hash": "54cfb99901c394314e8c486c9f27af98a6d51592"
+          }
+        },
+        {
           "client_id": "129299225454-8r46jl2ihmedech6a6777bldub7etdrp.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -33,20 +41,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "129299225454-8r46jl2ihmedech6a6777bldub7etdrp.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }

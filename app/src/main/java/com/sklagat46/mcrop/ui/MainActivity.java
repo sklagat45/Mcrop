@@ -78,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
                         Intent intentBuying = new Intent(getApplicationContext(), VegetablesListActivity.class);
                         startActivity(intentBuying);
                         break;
+                    case "Demand":
+                        Intent intentGragh = new Intent(getApplicationContext(), DemandGraphActivity.class);
+                        startActivity(intentGragh);
+                        break;
 
                     default:
                         Toast.makeText(MainActivity.this, "Sorry, It's Under development", Toast.LENGTH_SHORT).show();
@@ -94,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         List<CategoriesViews> listViewItems = new ArrayList<CategoriesViews>();
         listViewItems.add(new CategoriesViews(1, "Vegetables", R.drawable.vegetables_image));
         listViewItems.add(new CategoriesViews(2, "Fruits", R.drawable.fruits_image));
+        listViewItems.add(new CategoriesViews(3, "Demand", R.drawable.demand_curve));
         return listViewItems;
     }
 }

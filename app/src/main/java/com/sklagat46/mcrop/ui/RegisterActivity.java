@@ -22,7 +22,6 @@ import com.sklagat46.mcrop.views.UserProfile;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-
 public class RegisterActivity extends AppCompatActivity {
 
     private EditText username, residence, phoneNumber, userEmail, userpassword;
@@ -30,9 +29,7 @@ public class RegisterActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
-    String Username, Residence, PhoneNumber, Email, password;
-
-
+    //String Username, Residence, PhoneNumber, Email, password;
     DatabaseReference databaseUserProfile;
 
     @Override
@@ -55,27 +52,21 @@ public class RegisterActivity extends AppCompatActivity {
         signup = (Button) findViewById(R.id.signupBtn);
         signin = (Button) findViewById(R.id.signinBtn);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
-
-
-
-
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent startIntent = new Intent(getApplicationContext(), RegisterActivity.class);
-                //show how to pass information to next activity
+                //pass information to next activity
                 startActivity(startIntent);
 
                 finish();
             }
         });
-
-
         signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent startIntent = new Intent(getApplicationContext(), com.sklagat46.mcrop.ui.LoginActivity.class);
-                //show how to pass information to next activity
+                //pass information to next activity
                 startActivity(startIntent);
             }
         });
@@ -87,7 +78,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-        //check if everything is field
+        //check if everything is filled
             private void addUserProfile() {
                 String Username = username.getText().toString().trim();
                 String Residence = residence.getText().toString().trim();
@@ -113,9 +104,6 @@ public class RegisterActivity extends AppCompatActivity {
                     databaseUserProfile.child(id).setValue(userProfile);
 
                     Toast.makeText(getApplicationContext(), "user added", Toast.LENGTH_SHORT).show();
-
-
-
                 }
 
                 Task<AuthResult> authResultTask = auth.createUserWithEmailAndPassword(Email, Userpassword)
@@ -147,31 +135,16 @@ public class RegisterActivity extends AppCompatActivity {
 
                                     startActivity(new Intent(RegisterActivity.this, com.sklagat46.mcrop.ui.LoginActivity.class
                                     ));
-
-
                                     finish();
-
                                 }
-
-
                                 progressBar.setVisibility(View.VISIBLE);
                             }
-
                             //create user
-
-
                         });
             }
-
-
-
     @Override
-
     protected void onResume() {
-
         super.onResume();
-
-
         progressBar.setVisibility(View.GONE);}
 
 

@@ -1,16 +1,17 @@
 package com.sklagat46.mcrop.ui;
 
 import android.content.Intent;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.sklagat46.mcrop.R;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
@@ -35,10 +36,9 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(LoginActivity.this, MarketActivity.class));
+                startActivity(new Intent(LoginActivity.this, VegetableMarketActivity.class));
             }
         });
-
 
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             @Override
