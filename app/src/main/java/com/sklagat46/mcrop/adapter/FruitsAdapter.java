@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.listener.CustomItemClickListener;
-import com.sklagat46.mcrop.ui.StockMarketActivity;
+import com.sklagat46.mcrop.ui.FruitMarketActivity;
 import com.sklagat46.mcrop.views.FruitsViews;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class FruitsAdapter extends RecyclerView.Adapter<FruitsAdapter.MenuOption
             @Override
             public void onClick(View v) {
                 listener.onItemClick(v, mViewHolder.getPosition());
-                Intent intent = new Intent(context, StockMarketActivity.class);
+                Intent intent = new Intent(context, FruitMarketActivity.class);
                 context.startActivity(intent);
 
             }

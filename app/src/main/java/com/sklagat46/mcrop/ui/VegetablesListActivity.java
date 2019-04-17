@@ -116,7 +116,7 @@ public class VegetablesListActivity extends AppCompatActivity {
     }
 
     public void btnAddVeg(View view) {
-        Intent intent = new Intent(getApplicationContext(), AddStockActivity.class);
+        Intent intent = new Intent(getApplicationContext(), AddVegetableStockActivity.class);
         startActivity(intent);
     }
 }

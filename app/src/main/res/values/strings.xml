@@ -4,9 +4,9 @@
     <string name="password">password</string>
     <string name="Register">Register</string>
     <string name="category">category</string>
-        <string name="product_prompt">Choose the Product Type</string>
     <string name="title_select_product_category">Select product Category</string>
     <string name="label_add_vegetable_details">Add Vegetable Details</string>
+    <string name="label_add_fruit_details">Add Fruit Details</string>
     <string name="label_product_name">Product Name</string>
     <string name="label_location">Location</string>
     <string name="label_add_description_and_price">Add Description and price</string>
@@ -15,12 +15,11 @@
     <string name="save">Save</string>
     <string name="title_vegetables">Vegetables</string>
 
-    <string-array name="product_arrays">
+        <string-array name="product_arrays">
             <item>Vegetables</item>
             <item>Fruits</item>
 
-        </string-array>
-
+    </string-array>
 
 
 </resources>

@@ -15,19 +15,19 @@ import android.hardware.Camera;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
@@ -44,6 +45,7 @@ import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.util.Configs;
 import com.sklagat46.mcrop.util.ImageUtil;
 import com.sklagat46.mcrop.util.SharedPreferenceManager;
+import com.sklagat46.mcrop.views.AddStockViews;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -63,10 +65,9 @@ import androidx.loader.content.Loader;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AddStockActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class AddVegetableStockActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private EditText productName, location, description;
-    private Spinner productType, vegetable, fruit;
+    //private EditText productName, location, description;
     private static final int IMAGE_LOADER_ID = 1;
     private FirebaseAuth auth;
     private FirebaseUser firebaseUser;
@@ -82,14 +83,23 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     ImageButton galleryBtn;
     @BindView(R.id.imgv_photo)
     ImageView img_photo;
+    @BindView(R.id.editTextProductName)
+    EditText productName;
+    @BindView(R.id.locationETxt)
+    EditText location;
+    @BindView(R.id.descriptionETxt)
+    EditText description;
+    @BindView(R.id.buttonSaveBooking)
+    EditText btnSave;
+
+
     FirebaseStorage storage;
     StorageReference storageReference;
-    private Button done;
+    //private Button done;
     //String productName,location,description;
     private Bitmap imageBitmap;
     private String encodedImage = "";
     private Uri selectedImageUri;
-    private Uri filePath;
     private boolean onLoadFinishedCalled = false;
     private PackageManager packageManager;
     private int icon;
@@ -104,6 +114,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
     //private CameraPreview mPreview;
     DatabaseReference databaseUserProfile;
+    DatabaseReference databaseVegetableDetails;
     private String selectedImagePath;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -111,11 +122,46 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_product);
+        setContentView(R.layout.activity_add_vegetable_stock);
         ButterKnife.bind(this);
         FirebaseAuth auth;
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
+        databaseVegetableDetails = FirebaseDatabase.getInstance().getReference("vegetableDetails");
+        //get user instance
+        auth = FirebaseAuth.getInstance();
+        firebaseUser = auth.getCurrentUser();
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addVegetableDetails();
+            }
+        });
+    }
+    //check if everything is filled
+    private void addVegetableDetails() {
+        String ProductName = productName.getText().toString().trim();
+        String Location = location.getText().toString().trim();
+        String Description = description.getText().toString().trim();
+
+
+        //check if everything is field
+        if (TextUtils.isEmpty(ProductName) || TextUtils.isEmpty(Location) || TextUtils.isEmpty(Description) ) {
+
+            Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else {
+//upload details
+            String id = databaseVegetableDetails.push().getKey();
+            AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
+            databaseVegetableDetails.child(id).setValue(addStockViews);
+
+            Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
+        }
+
+
+
         setUpActionBar();
         //Check Permissions
         if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
@@ -130,7 +176,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
             try {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddStockActivity.this,
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddVegetableStockActivity.this,
                         BuildConfig.APPLICATION_ID + ".provider",
                         file));
                 int REQUEST_CAMERA = 1;
@@ -189,7 +235,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                 selectedImageUri = data.getData();
                 onLoadFinishedCalled = false;
                 this.getSupportLoaderManager().restartLoader(
-                        IMAGE_LOADER_ID, null, AddStockActivity.this);
+                        IMAGE_LOADER_ID, null, AddVegetableStockActivity.this);
                 img_photo.setVisibility(View.VISIBLE);
             } else {
                 Toast.makeText(this, "An error occurred",
@@ -329,7 +375,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
     }
 
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(AddStockActivity.this, selectedImageUri, PROJECTION,
+        return new CursorLoader(AddVegetableStockActivity.this, selectedImageUri, PROJECTION,
                 null, null, null);
     }
 
@@ -343,20 +389,23 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                         selectedImagePath = null;
                         if (data != null) {
 
-                            String wholeID;
+                            String wholeID = null;
 
-                            wholeID = DocumentsContract
-                                    .getDocumentId(selectedImageUri);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                                wholeID = DocumentsContract
+                                        .getDocumentId(selectedImageUri);
+                            }
 
                             // Split at colon, use second item in the array
                             String id = wholeID.split(":")[1];
 
                             String[] column = {MediaStore.Images.Media.DATA};
 
+
                             // where id is equal to
                             String sel = MediaStore.Images.Media._ID + "=?";
 
-                            Cursor cursor = AddStockActivity.this
+                            Cursor cursor = AddVegetableStockActivity.this
                                     .getContentResolver()
                                     .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                                             column, sel, new String[]{id},
@@ -381,12 +430,12 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                             decodeFile(selectedImagePath);
                             file = new File(selectedImagePath);
                         } else {
-                            Toast.makeText(AddStockActivity.this,
+                            Toast.makeText(AddVegetableStockActivity.this,
                                     "Could not retrieve the selected image",
                                     Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        Toast.makeText(AddStockActivity.this,
+                        Toast.makeText(AddVegetableStockActivity.this,
                                 "Could not retrieve the selected image",
                                 Toast.LENGTH_LONG).show();
                         Log.e(e.getClass().getName(), e.getMessage(), e);
@@ -428,14 +477,14 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddStockActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddVegetableStockActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddStockActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AddVegetableStockActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -454,12 +503,12 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
 
     }
 
-    public void btnCamera(View view) {
-
-    }
-
-    public void btnGallary(View view) {
-    }
+//    public void btnCamera(View view) {
+//
+//    }
+//
+//    public void btnGallary(View view) {
+//    }
 
     private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {
         private File imageFile;
@@ -467,7 +516,7 @@ public class AddStockActivity extends AppCompatActivity implements LoaderManager
 
         public InvokeCameraTask(File imageFile) {
             this.imageFile = imageFile;
-            progressDialog = new ProgressDialog(AddStockActivity.this);
+            progressDialog = new ProgressDialog(AddVegetableStockActivity.this);
             progressDialog.setMessage("Loading...");
         }
 
