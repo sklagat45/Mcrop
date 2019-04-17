@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -46,10 +45,7 @@ import com.sklagat46.mcrop.views.AddStockViews;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -88,7 +84,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     EditText location;
     @BindView(R.id.descriptionETxt)
     EditText description;
-    @BindView(R.id.buttonSave)
+    @BindView(R.id.btnSave)
     Button btnSave;
 
 
@@ -192,8 +188,8 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
             String id = databaseVegetableDetails.push().getKey();
             AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
             databaseVegetableDetails.child(id).setValue(addStockViews);
-
             Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
+            uploadImage();
         }
 
 
@@ -218,10 +214,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    public void btnSave(View view) {
-        uploadImage();
     }
 
 
@@ -289,7 +281,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
             String root = Environment.getExternalStorageDirectory().toString();
             System.out.println(root + " Root value in saveImage Function");
-            File myDir = new File(root + "/Soko Yetu/Images/sourcing/invoice");
+            File myDir = new File(root + "/mcrop/Images");
 
             if (!myDir.exists()) {
                 myDir.mkdirs();
@@ -389,8 +381,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                                 String wholeID;
 
 
-                                // getImageUrlWithAuthority(this,selectedImageUri);
-
                                 wholeID = DocumentsContract
                                         .getDocumentId(selectedImageUri);
 
@@ -462,27 +452,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
     }
 
-    public static String getImageUrlWithAuthority(Context context, Uri uri) {
-        InputStream is = null;
-        if (uri.getAuthority() != null) {
-            try {
-                is = context.getContentResolver().openInputStream(uri);
-                Bitmap bmp = BitmapFactory.decodeStream(is);
-
-                // return writeToTempImageAndGetPathUri(context, bmp).toString();
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                try {
-                    is.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return null;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -501,7 +470,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
         if (selectedImageUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Uploading Image...");
             progressDialog.show();
 
             StorageReference ref = storageReference.child("vegetables/" + UUID.randomUUID().toString());

@@ -90,7 +90,7 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     EditText location;
     @BindView(R.id.descriptionETxt)
     EditText description;
-    @BindView(R.id.buttonSave)
+    @BindView(R.id.btnSave)
     Button btnSave;
 
 
@@ -186,15 +186,15 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
         if (TextUtils.isEmpty(ProductName) || TextUtils.isEmpty(Location) || TextUtils.isEmpty(Description) ) {
 
             Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
-            return;
         }
         else {
-//upload details
+           //upload details
             String id = databaseFruitDetails.push().getKey();
             AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
+            assert id != null;
             databaseFruitDetails.child(id).setValue(addStockViews);
-
             Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
+            uploadImage();
         }
 
     }
@@ -218,11 +218,6 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    public void btnSave(View view) {
-
-        uploadImage();
     }
 
 
@@ -468,7 +463,7 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
 
         if (selectedImageUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Uploading image...");
             progressDialog.show();
 
             StorageReference ref = storageReference.child("fruits/" + UUID.randomUUID().toString());
