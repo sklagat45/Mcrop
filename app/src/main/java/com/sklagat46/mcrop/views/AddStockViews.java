@@ -12,6 +12,11 @@ public class AddStockViews {
         this.location = location;
         this.description = description;
     }
+
+    public AddStockViews() {
+
+    }
+
     public String getproductId() {
         return productId;
     }
