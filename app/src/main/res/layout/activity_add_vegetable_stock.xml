@@ -168,7 +168,7 @@
             android:weightSum="1">
 
             <Button
-                android:id="@+id/buttonEditBookingDetails"
+                android:id="@+id/btnCancel"
                 style="@style/allEditButtons"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
@@ -181,7 +181,7 @@
                 android:textAllCaps="false" />
 
             <Button
-                android:id="@+id/buttonSaveBooking"
+                android:id="@+id/btnSave"
                 style="@style/allSaveButtons"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
