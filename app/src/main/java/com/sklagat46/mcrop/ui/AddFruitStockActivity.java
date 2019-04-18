@@ -25,6 +25,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -78,9 +79,9 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     private File file;
     private String iname;
     @BindView(R.id.btn_camera)
-    ImageButton cameraBtn;
+    ImageButton btnCamera;
     @BindView(R.id.btn_gallary)
-    ImageButton galleryBtn;
+    ImageButton btnGallery;
     @BindView(R.id.imgv_photo)
     ImageView img_photo;
     @BindView(R.id.editTextProductName)
@@ -89,8 +90,8 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     EditText location;
     @BindView(R.id.descriptionETxt)
     EditText description;
-    @BindView(R.id.buttonSaveBooking)
-    EditText btnSave;
+    @BindView(R.id.btnSave)
+    Button btnSave;
 
 
     FirebaseStorage storage;
@@ -131,11 +132,47 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
         //get user instance
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addFruitDetails();
-            }
+        btnSave.setOnClickListener(v -> addFruitDetails());
+
+        setUpActionBar();
+        //Check Permissions
+        if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
+            ActivityCompat.requestPermissions(Objects.requireNonNull(this),
+                    PERMISSIONS_CAMERA, PERMISSION_ALL);
+        }
+
+        img_photo.setVisibility(View.GONE);
+        packageManager = this.getPackageManager();
+
+        btnCamera.setOnClickListener(v -> {
+            //Check Permissions
+            if (!SharedPreferenceManager.hasPermissions(this,PERMISSIONS_CAMERA)) {
+                int PERMISSION_ALL = 1;
+                ActivityCompat.requestPermissions(this, PERMISSIONS_CAMERA, PERMISSION_ALL);
+            } else {
+                try {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddFruitStockActivity.this,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            file));
+                    int REQUEST_CAMERA = 1;
+                    startActivityForResult(intent, REQUEST_CAMERA);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Camera error1", Toast.LENGTH_SHORT).show();
+                }}
+        });
+
+        btnGallery.setOnClickListener((View v) -> {
+            Intent intent = new Intent();
+            intent.setType("image/*");
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+
+            startActivityForResult(
+                    Intent.createChooser(intent, "Pick a source"),
+                    PICK_IMAGE);
+
         });
     }
     //check if everything is filled
@@ -149,53 +186,16 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
         if (TextUtils.isEmpty(ProductName) || TextUtils.isEmpty(Location) || TextUtils.isEmpty(Description) ) {
 
             Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
-            return;
         }
         else {
-//upload details
+           //upload details
             String id = databaseFruitDetails.push().getKey();
             AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
+            assert id != null;
             databaseFruitDetails.child(id).setValue(addStockViews);
-
             Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
+            uploadImage();
         }
-
-
-
-        setUpActionBar();
-        //Check Permissions
-        if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
-            ActivityCompat.requestPermissions(Objects.requireNonNull(this),
-                    PERMISSIONS_CAMERA, PERMISSION_ALL);
-        }
-
-        img_photo.setVisibility(View.GONE);
-        packageManager = this.getPackageManager();
-
-        cameraBtn.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddFruitStockActivity.this,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        file));
-                int REQUEST_CAMERA = 1;
-                startActivityForResult(intent, REQUEST_CAMERA);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Camera error1", Toast.LENGTH_SHORT).show();
-            }
-        });
-        galleryBtn.setOnClickListener((View v) -> {
-            Intent intent = new Intent();
-            intent.setType("image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
-
-            startActivityForResult(
-                    Intent.createChooser(intent, "Pick a source"),
-                    PICK_IMAGE);
-
-        });
 
     }
 
@@ -218,11 +218,6 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
-    }
-
-    public void btnSave(View view) {
-
-        uploadImage();
     }
 
 
@@ -468,7 +463,7 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
 
         if (selectedImageUri != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Uploading image...");
             progressDialog.show();
 
             StorageReference ref = storageReference.child("fruits/" + UUID.randomUUID().toString());
@@ -501,13 +496,6 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     public void btnCancel(View view) {
 
 
-    }
-
-    public void btnCamera(View view) {
-
-    }
-
-    public void btnGallary(View view) {
     }
 
     private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {
