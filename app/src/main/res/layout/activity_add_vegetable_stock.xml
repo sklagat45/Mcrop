@@ -124,7 +124,6 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0.65"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/comment_textarea"
                     android:ems="10"
                     android:gravity="top|center_horizontal"
                     android:padding="0dp"

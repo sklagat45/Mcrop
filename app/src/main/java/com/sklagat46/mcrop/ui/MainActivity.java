@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setupCards();
 
-
 //       Button loginBtn = (Button) findViewById(R.id.loginBtn)
 //        loginBtn.setOnClickListener(new View.OnClickListener() {
 //        @Override

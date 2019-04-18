@@ -87,8 +87,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     EditText location;
     @BindView(R.id.descriptionETxt)
     EditText description;
-    @BindView(R.id.btnSave)
-    Button btnSave;
+    public static Activity activity;
 
 
     FirebaseStorage storage;
@@ -100,7 +99,8 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     private Uri selectedImageUri;
     private boolean onLoadFinishedCalled = false;
     private PackageManager packageManager;
-    public static Activity activity;
+    @BindView(R.id.btnSave)
+    Button btnSave;
     private int icon;
 
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -213,36 +213,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
     }
 
-    private class addVegetableTask extends AsyncTask<Vegetable, Void, Void> {
-        @Override
-        protected Void doInBackground(Vegetable... item) {
-            mcropRepository.addVegetable(item[0]);
-            return null;
-        }
-    }
-
-    private void setUpActionBar() {
-        Drawable upArrow = getResources().getDrawable(R.drawable.ic_chevron_left_white_24dp);
-        toolbar.setNavigationIcon(upArrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        onBackPressed();
-        return true;
-    }
-
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -300,6 +270,27 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
     }
 
+    private void setUpActionBar() {
+        Drawable upArrow = getResources().getDrawable(R.drawable.ic_chevron_left_white_24dp);
+        toolbar.setNavigationIcon(upArrow);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        onBackPressed();
+        return true;
+    }
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
     //Save Images to a specific folder
     public void saveImage(Bitmap finalBitmap) {
 
@@ -347,52 +338,6 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
 
     }
-
-    public void decodeFile(String filePath) {
-
-        final int REQUIRED_WIDTH = 400;
-        final int REQUIRED_HEIGHT = 300;
-
-        final BitmapFactory.Options o = new BitmapFactory.Options();
-        o.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, o);
-
-        o.inSampleSize = ImageUtil.calculateBitmapInSampleSize(o,
-                REQUIRED_WIDTH, REQUIRED_HEIGHT);
-        o.inJustDecodeBounds = false;
-
-        imageBitmap = BitmapFactory.decodeFile(filePath, o);
-
-        img_photo.setImageBitmap(imageBitmap);
-        img_photo.setVisibility(View.VISIBLE);
-
-    }
-
-    public String getStringFromBitmap(Bitmap bitmapPicture) {
-
-        final int COMPRESSION_QUALITY = 100;
-        String encodedImage;
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        bitmapPicture.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY,
-                byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-        return encodedImage;
-    }
-
-    //covert imagestring to bitmap
-    private Bitmap getBitmapFromString(String input) {
-
-        byte[] decodedString = Base64.decode(input, Base64.DEFAULT);
-        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        return decodedByte;
-    }
-
-    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(AddVegetableStockActivity.this, selectedImageUri, PROJECTION,
-                null, null, null);
-    }
-
 
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         switch (loader.getId()) {
@@ -473,23 +418,54 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
     }
 
-    public void onLoaderReset(Loader<Cursor> arg0) {
-        // TODO Auto-generated method stub
+    public void decodeFile(String filePath) {
+
+        final int REQUIRED_WIDTH = 400;
+        final int REQUIRED_HEIGHT = 300;
+
+        final BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, o);
+
+        o.inSampleSize = ImageUtil.calculateBitmapInSampleSize(o,
+                REQUIRED_WIDTH, REQUIRED_HEIGHT);
+        o.inJustDecodeBounds = false;
+
+        imageBitmap = BitmapFactory.decodeFile(filePath, o);
+
+        img_photo.setImageBitmap(imageBitmap);
+        img_photo.setVisibility(View.VISIBLE);
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
+    public String getStringFromBitmap(Bitmap bitmapPicture) {
+
+        final int COMPRESSION_QUALITY = 100;
+        String encodedImage;
+        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+        bitmapPicture.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY,
+                byteArrayBitmapStream);
+        byte[] b = byteArrayBitmapStream.toByteArray();
+        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+        return encodedImage;
+    }
+
+    //covert imagestring to bitmap
+    private Bitmap getBitmapFromString(String input) {
+
+        byte[] decodedString = Base64.decode(input, Base64.DEFAULT);
+        Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        return decodedByte;
+    }
+
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(AddVegetableStockActivity.this, selectedImageUri, PROJECTION,
+                null, null, null);
+    }
+
+    public void onLoaderReset(Loader<Cursor> arg0) {
+        // TODO Auto-generated method stub
+
     }
 
     private void uploadImage() {
@@ -517,8 +493,33 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public void btnCancel(View view) {
         onBackPressed();
+    }
+
+    public void btnSave(View view) {
+    }
+
+    private class addVegetableTask extends AsyncTask<Vegetable, Void, Void> {
+        @Override
+        protected Void doInBackground(Vegetable... item) {
+            mcropRepository.addVegetable(item[0]);
+            return null;
+        }
     }
 
 }
