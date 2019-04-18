@@ -42,7 +42,7 @@
 
         <activity android:name=".ui.FruitsListActivity" />
         <activity android:name=".ui.VegetablesListActivity" />
-        <activity android:name=".ui.MainActivity">
+        <activity android:name=".ui.Home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,7 +50,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.LoginActivity" />
-        <activity android:name=".ui.Home" />
+        <activity android:name=".ui.MainActivity" />
         <activity android:name=".ui.VegetableMarketActivity" />
         <activity android:name=".ui.RegisterActivity" />
         <activity android:name=".ui.ForgotPasswordActivity" />
