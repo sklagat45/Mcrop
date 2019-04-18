@@ -14,8 +14,9 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="title_vegetables">Vegetables</string>
+    <string name="fruts">Fruts</string>
 
-        <string-array name="product_arrays">
+    <string-array name="product_arrays">
             <item>Vegetables</item>
             <item>Fruits</item>
 

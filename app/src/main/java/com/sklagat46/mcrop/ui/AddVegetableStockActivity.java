@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.hardware.Camera;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,6 +39,8 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sklagat46.mcrop.BuildConfig;
 import com.sklagat46.mcrop.R;
+import com.sklagat46.mcrop.data.model.Vegetable;
+import com.sklagat46.mcrop.data.repository.McropRepository;
 import com.sklagat46.mcrop.util.Configs;
 import com.sklagat46.mcrop.util.ImageUtil;
 import com.sklagat46.mcrop.util.SharedPreferenceManager;
@@ -112,6 +115,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     DatabaseReference databaseUserProfile;
     DatabaseReference databaseVegetableDetails;
     private String selectedImagePath;
+    private McropRepository mcropRepository;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -127,6 +131,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         //get user instance
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
+        mcropRepository = new McropRepository(getApplicationContext());
         setUpActionBar();
         btnSave.setOnClickListener(v -> addVegetableDetails());
 
@@ -178,6 +183,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         String ProductName = productName.getText().toString().trim();
         String Location = location.getText().toString().trim();
         String Description = description.getText().toString().trim();
+        final String vegetableId = UUID.randomUUID().toString();
 
 
         //check if everything is field
@@ -185,6 +191,18 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
             Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
         } else {
+            //safe to local db
+            Vegetable vegetable = new Vegetable();
+            vegetable.setVegetableId(vegetableId);
+            vegetable.setVegetableName(ProductName);
+            vegetable.setLocation(Location);
+            vegetable.setDescription(Description);
+            if (imageBitmap != null) {
+                vegetable.setProductImage(getStringFromBitmap(imageBitmap));
+            }
+            new addVegetableTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, vegetable);
+
+
             String id = databaseVegetableDetails.push().getKey();
             AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
             databaseVegetableDetails.child(id).setValue(addStockViews);
@@ -193,6 +211,14 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         }
 
 
+    }
+
+    private class addVegetableTask extends AsyncTask<Vegetable, Void, Void> {
+        @Override
+        protected Void doInBackground(Vegetable... item) {
+            mcropRepository.addVegetable(item[0]);
+            return null;
+        }
     }
 
     private void setUpActionBar() {

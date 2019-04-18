@@ -3,12 +3,14 @@ package com.sklagat46.mcrop.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 
 import com.sklagat46.mcrop.R;
 import com.sklagat46.mcrop.adapter.VegetablesAdapter;
-import com.sklagat46.mcrop.listener.CustomItemClickListener;
+import com.sklagat46.mcrop.data.model.Vegetable;
+import com.sklagat46.mcrop.data.repository.McropRepository;
 import com.sklagat46.mcrop.views.VegetableViews;
 
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ public class VegetablesListActivity extends AppCompatActivity {
     @BindView(R.id.recycleView)
     RecyclerView recyclerView;
     private VegetablesAdapter mAdapter;
+    private McropRepository mcropRepository;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -39,6 +42,9 @@ public class VegetablesListActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         setUpActionBar();
         setupListView();
+
+        mcropRepository = new McropRepository(getApplicationContext());
+        new FetchVegetableTask().execute();
 
     }
 
@@ -67,16 +73,22 @@ public class VegetablesListActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
-        mAdapter = new VegetablesAdapter(this, vegetableList(), new CustomItemClickListener() {
-            @Override
-            public void onItemClick(View v, int position) {
-                //VegetableViews dispatchView = (VegetableViews) mAdapter.getItem(position);
-            }
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        new FetchVegetableTask().execute();
+    }
+
+    public void setListData(final List<Vegetable> vegetables) {
+
+        mAdapter = new VegetablesAdapter(this, vegetables, (v, position) -> {
+            //VegetableViews dispatchView = (VegetableViews) mAdapter.getItem(position);
         });
 
         recyclerView.setAdapter(mAdapter);
-
-
     }
 
     private List<VegetableViews> vegetableList() {
@@ -118,5 +130,19 @@ public class VegetablesListActivity extends AppCompatActivity {
     public void btnAddVeg(View view) {
         Intent intent = new Intent(getApplicationContext(), AddVegetableStockActivity.class);
         startActivity(intent);
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private class FetchVegetableTask extends AsyncTask<String, Void, List<Vegetable>> {
+        @Override
+        protected List<Vegetable> doInBackground(String... params) {
+
+            return mcropRepository.getAllVegetables();
+        }
+
+        protected void onPostExecute(List<Vegetable> vegetables) {
+            super.onPostExecute(vegetables);
+            setListData(vegetables);
+        }
     }
 }
