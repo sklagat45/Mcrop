@@ -154,6 +154,7 @@
                         android:layout_toRightOf="@+id/btn_camera"
                         android:background="@drawable/btn_bg_white"
                         android:textColor="#000000"
+                        android:layout_toEndOf="@+id/btn_camera"
                         app:srcCompat="@drawable/ic_photo_library_black_24px" />
                 </RelativeLayout>
             </LinearLayout>

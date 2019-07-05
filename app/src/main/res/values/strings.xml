@@ -17,8 +17,8 @@
     <string name="fruts">Fruts</string>
 
     <string-array name="product_arrays">
-            <item>Vegetables</item>
-            <item>Fruits</item>
+        <item>Vegetables</item>
+        <item>Fruits</item>
 
     </string-array>
 

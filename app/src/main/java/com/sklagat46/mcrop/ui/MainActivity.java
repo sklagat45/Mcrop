@@ -82,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intentGragh);
                         break;
 
+                    case "nuts":
+                        Intent intentGrain = new Intent(getApplicationContext(), NutsActivity.class);
+                        startActivity(intentGrain);
+                        break;
+
                     default:
                         Toast.makeText(MainActivity.this, "Sorry, It's Under development", Toast.LENGTH_SHORT).show();
                         break;
@@ -98,6 +103,8 @@ public class MainActivity extends AppCompatActivity {
         listViewItems.add(new CategoriesViews(1, "Vegetables", R.drawable.vegetables_image));
         listViewItems.add(new CategoriesViews(2, "Fruits", R.drawable.fruits_image));
         listViewItems.add(new CategoriesViews(3, "Demand", R.drawable.demand_curve));
+        listViewItems.add(new CategoriesViews(4, "Nuts", R.drawable.demand_curve));
+
         return listViewItems;
     }
 }
