@@ -8,6 +8,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
@@ -23,10 +28,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.sklagat46.mcrop.R;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 public class LoginActivity extends AppCompatActivity implements OnConnectionFailedListener {
     private FirebaseAuth firebaseAuth;
     private TextView forgotPassword;
@@ -34,7 +35,6 @@ public class LoginActivity extends AppCompatActivity implements OnConnectionFail
     private EditText userEmail;
     private EditText userpassword;
     DatabaseReference userprofile;
-    private FirebaseAuth Auth;
     String Email, Password;
     private static final int RC_SIGN_IN = 9001;
     GoogleApiClient mGoogleApiClient;
