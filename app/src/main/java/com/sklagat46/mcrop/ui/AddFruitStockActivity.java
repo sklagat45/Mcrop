@@ -224,6 +224,7 @@ public class AddFruitStockActivity extends AppCompatActivity implements LoaderMa
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE) {
 
             if (resultCode == Activity.RESULT_OK) {
