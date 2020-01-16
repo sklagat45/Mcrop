@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
 import com.sklagat46.mcrop.R;
+import com.sklagat46.mcrop.views.BackgroundWorker;
 
 public class LoginActivity extends AppCompatActivity implements OnConnectionFailedListener {
     private FirebaseAuth firebaseAuth;
@@ -35,7 +36,7 @@ public class LoginActivity extends AppCompatActivity implements OnConnectionFail
     private EditText userEmail;
     private EditText userpassword;
     DatabaseReference userprofile;
-    String Email, Password;
+    String Email, password;
     private static final int RC_SIGN_IN = 9001;
     GoogleApiClient mGoogleApiClient;
 
@@ -63,9 +64,13 @@ public class LoginActivity extends AppCompatActivity implements OnConnectionFail
                 .build();
 
 
+
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String type ="login";
+                BackgroundWorker backgroundWorker =new BackgroundWorker(this);
+                backgroundWorker.execute(type, String.valueOf(userEmail),password);
                 logIn();
 //                startActivity(new Intent(LoginActivity.this, MainActivity.class));
 
