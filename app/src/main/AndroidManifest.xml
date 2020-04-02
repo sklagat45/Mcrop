@@ -55,7 +55,7 @@
         <activity android:name=".ui.RegisterActivity" />
         <activity android:name=".ui.ForgotPasswordActivity" />
         <activity android:name=".ui.StockMarketActivity" />
-        <activity android:name=".ui.AddVegetableStockActivity" />
+
     </application>
 
 </manifest>
