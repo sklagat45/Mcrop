@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.AddStockActivity">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay">
+
+                <TextView
+                    android:id="@+id/toolbarTitle"
+                    style="@style/actionBarTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/title_vegetables" />
+
+            </androidx.appcompat.widget.Toolbar>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_normal"
+            tools:background="#f4f5f7">
+
+            <TextView
+                android:id="@+id/productETxt"
+                android:layout_width="match_parent"
+                android:layout_height="26dp"
+                android:text="@string/label_add_vegetable_details"
+                android:textAlignment="center"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+
+            <EditText
+                android:id="@+id/editTextProductName"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:ems="10"
+                android:hint="@string/label_product_name"
+                android:inputType="textPersonName"
+                android:padding="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.132"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <EditText
+                android:id="@+id/locationETxt"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp"
+                android:ems="10"
+                android:hint="@string/label_location"
+                android:inputType="textPersonName"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.131"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextProductName" />
+
+            <EditText
+                android:id="@+id/descriptionETxt"
+                android:layout_width="414dp"
+                android:layout_height="79dp"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_weight="1"
+                android:ems="10"
+                android:hint="@string/label_add_description_and_price"
+                android:inputType="textMultiLine"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/productETxt" />
+
+
+            <LinearLayout
+                android:id="@+id/layout_addPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="0.49"
+                android:orientation="vertical"
+                android:padding="2dp"
+                android:weightSum="1"
+                app:layout_constraintTop_toBottomOf="@+id/descriptionETxt">
+
+                <TextView
+                    android:id="@+id/txtcomment_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:text="@string/add_photo" />
+
+                <ImageView
+                    android:id="@+id/imgv_photo"
+                    android:layout_width="140dp"
+                    android:layout_height="150dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_weight="0.65"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/comment_textarea"
+                    android:ems="10"
+                    android:gravity="top|center_horizontal"
+                    android:padding="0dp"
+                    android:scaleType="centerCrop" />
+
+                <RelativeLayout
+                    android:id="@+id/attach_photo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageButton
+                        android:id="@+id/btn_camera"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:background="@drawable/btn_bg_white"
+                        android:text="CANCEL"
+                        android:onClick="btnCamera"
+                        android:textColor="#000000"
+                        app:srcCompat="@drawable/icon_camera" />
+
+                    <ImageButton
+                        android:id="@+id/btn_gallary"
+                        android:layout_width="70dp"
+                        android:layout_height="40dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_toRightOf="@+id/btn_camera"
+                        android:onClick="btnGallary"
+                        android:background="@drawable/btn_bg_white"
+                        android:textColor="#000000"
+                        app:srcCompat="@drawable/ic_photo_library_black_24px" />
+                </RelativeLayout>
+            </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginTop="@dimen/margin_smallest"
+            android:orientation="horizontal"
+            android:weightSum="1">
+
+            <Button
+                android:id="@+id/buttonEditBookingDetails"
+                style="@style/allEditButtons"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_marginEnd="@dimen/margin_normal"
+                android:layout_marginRight="@dimen/margin_normal"
+                android:layout_weight=".5"
+                android:background="@drawable/bg_edit_button"
+                android:onClick="btnCancel"
+                android:text="@string/cancel"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/buttonSaveBooking"
+                style="@style/allSaveButtons"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/button_height"
+                android:layout_weight=".5"
+                android:background="@drawable/bg_blue_button"
+                android:onClick="btnSave"
+                android:text="@string/save"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</LinearLayout>

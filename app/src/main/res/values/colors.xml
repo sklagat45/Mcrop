@@ -6,5 +6,28 @@
     <color name="login_color">#0B5B7C</color>
     <color name="forgot_password">#1BA8B7</color>
     <color name="black">#000000</color>
+    <color name="orange2">#f7941d</color>
+    <color name="light_blue">#00aeef</color>
+
+    <color name="white">#FFFFFF</color>
+    <color name="gray0">#FAFAFA</color>
+    <color name="gray1">#F5F5F5</color>
+    <color name="gray2">#EEEEEE</color>
+    <color name="gray3">#E0E0E0</color>
+    <color name="gray4">#BDBDBD</color>
+    <color name="gray5">#9E9E9E</color>
+
+    <color name="red">#C11B17</color>
+    <color name="red_light">#fc2a32</color>
+    <color name="green">#00C300</color>
+    <color name="afri_green">#3cb879</color>
+    <color name="grey">#DBD8D9</color>
+    <color name="grey_500">#DBD8D9</color>
+    <color name="grey_50">#FAFAFA</color>
+    <color name="grey_100">#F5F5F5</color>
+    <color name="grey_200">#EEEEEE</color>
+    <color name="grey_300">#E0E0E0</color>
+    <color name="grey_400">#9E9E9E</color>
+    <color name="grey_dim">#696969</color>
 
 </resources>
