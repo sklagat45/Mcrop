@@ -474,7 +474,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     }
 
     public void onLoaderReset(Loader<Cursor> arg0) {
-        // TODO Auto-generated method stub
+        
 
     }
 
