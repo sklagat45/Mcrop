@@ -31,7 +31,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.AddStockActivity" />
+        <activity android:name=".ui.FruitMarketActivity" />
+        <activity android:name=".ui.DemandGraphActivity" />
+        <activity android:name=".ui.AddFruitStockActivity" />
+        <activity android:name=".ui.AddVegetableStockActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
@@ -48,10 +51,11 @@
         </activity>
         <activity android:name=".ui.LoginActivity" />
         <activity android:name=".ui.Home" />
-        <activity android:name=".ui.MarketActivity" />
+        <activity android:name=".ui.VegetableMarketActivity" />
         <activity android:name=".ui.RegisterActivity" />
         <activity android:name=".ui.ForgotPasswordActivity" />
         <activity android:name=".ui.StockMarketActivity" />
+        <activity android:name=".ui.AddVegetableStockActivity" />
     </application>
 
 </manifest>
