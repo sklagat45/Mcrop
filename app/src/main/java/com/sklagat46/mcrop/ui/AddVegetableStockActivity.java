@@ -25,23 +25,22 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.sklagat46.mcrop.BuildConfig;
 import com.sklagat46.mcrop.R;
+import com.sklagat46.mcrop.data.model.Vegetable;
+import com.sklagat46.mcrop.data.repository.McropRepository;
 import com.sklagat46.mcrop.util.Configs;
 import com.sklagat46.mcrop.util.ImageUtil;
 import com.sklagat46.mcrop.util.SharedPreferenceManager;
@@ -54,7 +53,6 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -89,8 +87,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     EditText location;
     @BindView(R.id.descriptionETxt)
     EditText description;
-    @BindView(R.id.buttonSaveBooking)
-    EditText btnSave;
+    public static Activity activity;
 
 
     FirebaseStorage storage;
@@ -102,6 +99,8 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     private Uri selectedImageUri;
     private boolean onLoadFinishedCalled = false;
     private PackageManager packageManager;
+    @BindView(R.id.btnSave)
+    Button btnSave;
     private int icon;
 
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -116,6 +115,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
     DatabaseReference databaseUserProfile;
     DatabaseReference databaseVegetableDetails;
     private String selectedImagePath;
+    private McropRepository mcropRepository;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -131,38 +131,10 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         //get user instance
         auth = FirebaseAuth.getInstance();
         firebaseUser = auth.getCurrentUser();
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addVegetableDetails();
-            }
-        });
-    }
-    //check if everything is filled
-    private void addVegetableDetails() {
-        String ProductName = productName.getText().toString().trim();
-        String Location = location.getText().toString().trim();
-        String Description = description.getText().toString().trim();
-
-
-        //check if everything is field
-        if (TextUtils.isEmpty(ProductName) || TextUtils.isEmpty(Location) || TextUtils.isEmpty(Description) ) {
-
-            Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        else {
-//upload details
-            String id = databaseVegetableDetails.push().getKey();
-            AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
-            databaseVegetableDetails.child(id).setValue(addStockViews);
-
-            Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
-        }
-
-
-
+        mcropRepository = new McropRepository(getApplicationContext());
         setUpActionBar();
+        btnSave.setOnClickListener(v -> addVegetableDetails());
+
         //Check Permissions
         if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
             ActivityCompat.requestPermissions(Objects.requireNonNull(this),
@@ -173,19 +145,26 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         packageManager = this.getPackageManager();
 
         cameraBtn.setOnClickListener(v -> {
-            try {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddVegetableStockActivity.this,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        file));
-                int REQUEST_CAMERA = 1;
-                startActivityForResult(intent, REQUEST_CAMERA);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Toast.makeText(this, "Camera error1", Toast.LENGTH_SHORT).show();
+            //Check Permissions
+            if (!SharedPreferenceManager.hasPermissions(this, PERMISSIONS_CAMERA)) {
+                int PERMISSION_ALL = 1;
+                ActivityCompat.requestPermissions(this, PERMISSIONS_CAMERA, PERMISSION_ALL);
+            } else {
+                try {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    file = new File(android.os.Environment.getExternalStorageDirectory(), "temp.jpg");
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, FileProvider.getUriForFile(AddVegetableStockActivity.this,
+                            BuildConfig.APPLICATION_ID + ".provider",
+                            file));
+                    startActivityForResult(intent, CAMERA_REQUEST_CODE);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(activity, "Camera error1", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
         galleryBtn.setOnClickListener((View v) -> {
             Intent intent = new Intent();
             intent.setType("image/*");
@@ -199,32 +178,40 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
     }
 
-    private void setUpActionBar() {
-        Drawable upArrow = getResources().getDrawable(R.drawable.ic_chevron_left_white_24dp);
-        toolbar.setNavigationIcon(upArrow);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    //check if everything is filled
+    private void addVegetableDetails() {
+        String ProductName = productName.getText().toString().trim();
+        String Location = location.getText().toString().trim();
+        String Description = description.getText().toString().trim();
+        final String vegetableId = UUID.randomUUID().toString();
+
+
+        //check if everything is field
+        if (TextUtils.isEmpty(ProductName) || TextUtils.isEmpty(Location) || TextUtils.isEmpty(Description)) {
+
+            Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
+        } else {
+            //safe to local db
+            Vegetable vegetable = new Vegetable();
+            vegetable.setVegetableId(vegetableId);
+            vegetable.setVegetableName(ProductName);
+            vegetable.setLocation(Location);
+            vegetable.setDescription(Description);
+            if (imageBitmap != null) {
+                vegetable.setProductImage(getStringFromBitmap(imageBitmap));
+            }
+            new addVegetableTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, vegetable);
+
+
+            String id = databaseVegetableDetails.push().getKey();
+            AddStockViews addStockViews = new AddStockViews(id, ProductName, Location, Description);
+            databaseVegetableDetails.child(id).setValue(addStockViews);
+            Toast.makeText(getApplicationContext(), "product saved", Toast.LENGTH_SHORT).show();
+            uploadImage();
+        }
+
+
     }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        finish();
-        onBackPressed();
-        return true;
-    }
-
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
-    }
-
-    public void btnSave(View view) {
-
-        uploadImage();
-    }
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -252,7 +239,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                     BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
 
                     String picturePath = file.getAbsolutePath();
-                    System.out.println(picturePath + " Picture path in side the Onactivity method");
+                    System.out.println(picturePath + " Picture path in side the On activity method");
 
                     bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(),
                             bitmapOptions);
@@ -276,14 +263,32 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                     e.printStackTrace();
                     Toast.makeText(this, "Camera error", Toast.LENGTH_SHORT).show();
                 }
-            } else if (resultCode == Activity.RESULT_CANCELED) {
-                //img_photo.setVisibility(View.GONE);
-
             } else {
                 Toast.makeText(this, "An error occurred",
                         Toast.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void setUpActionBar() {
+        Drawable upArrow = getResources().getDrawable(R.drawable.ic_chevron_left_white_24dp);
+        toolbar.setNavigationIcon(upArrow);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        onBackPressed();
+        return true;
+    }
+
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 
     //Save Images to a specific folder
@@ -293,7 +298,7 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
 
             String root = Environment.getExternalStorageDirectory().toString();
             System.out.println(root + " Root value in saveImage Function");
-            File myDir = new File(root + "/Soko Yetu/Images/sourcing/invoice");
+            File myDir = new File(root + "/mcrop/Images");
 
             if (!myDir.exists()) {
                 myDir.mkdirs();
@@ -332,6 +337,85 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
             e.printStackTrace();
         }
 
+    }
+
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        switch (loader.getId()) {
+            case IMAGE_LOADER_ID:
+                if (!onLoadFinishedCalled) {
+                    onLoadFinishedCalled = true;
+                    try {
+                        selectedImagePath = null;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            if (data != null) {
+
+                                String wholeID;
+
+
+                                wholeID = DocumentsContract
+                                        .getDocumentId(selectedImageUri);
+
+                                // Split at colon, use second item in the array
+                                String id = wholeID.split(":")[1];
+
+                                String[] column = {MediaStore.Images.Media.DATA};
+
+                                // where id is equal to
+                                String sel = MediaStore.Images.Media._ID + "=?";
+
+                                Cursor cursor = AddVegetableStockActivity.this
+                                        .getContentResolver()
+                                        .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                                column, sel, new String[]{id},
+                                                null);
+
+                                String filePath = "";
+
+                                int columnIndex = cursor.getColumnIndex(column[0]);
+
+                                if (cursor.moveToFirst()) {
+                                    filePath = cursor.getString(columnIndex);
+                                }
+
+                                cursor.close();
+
+                                selectedImagePath = filePath;
+                            } else {
+                                selectedImagePath = selectedImageUri.getPath();
+                            }
+                        } else {
+                            String[] projection = {MediaStore.Images.Media.DATA};
+                            Cursor cursor = AddVegetableStockActivity.this.getContentResolver()
+                                    .query(selectedImageUri, projection, null,
+                                            null, null);
+                            selectedImagePath = selectedImageUri.getPath();
+                            if (cursor != null) {
+                                int column_index = cursor
+                                        .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                                cursor.moveToFirst();
+                                selectedImagePath = cursor.getString(column_index);
+
+                                cursor.close();
+                            }
+                        }
+
+                        if (selectedImagePath != null) {
+                            decodeFile(selectedImagePath);
+                            file = new File(selectedImagePath);
+                        } else {
+                            Toast.makeText(AddVegetableStockActivity.this,
+                                    "Could not retrieve the selected image",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    } catch (Exception e) {
+                        Toast.makeText(AddVegetableStockActivity.this,
+                                "Could not retrieve the selected image",
+                                Toast.LENGTH_LONG).show();
+                        Log.e(e.getClass().getName(), e.getMessage(), e);
+                    }
+                }
+                break;
+        }
     }
 
     public void decodeFile(String filePath) {
@@ -379,75 +463,34 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
                 null, null, null);
     }
 
-    @Override
-    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
-        switch (loader.getId()) {
-            case IMAGE_LOADER_ID:
-                if (!onLoadFinishedCalled) {
-                    onLoadFinishedCalled = true;
-                    try {
-                        selectedImagePath = null;
-                        if (data != null) {
+    public void onLoaderReset(Loader<Cursor> arg0) {
+        // TODO Auto-generated method stub
 
-                            String wholeID = null;
-
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                                wholeID = DocumentsContract
-                                        .getDocumentId(selectedImageUri);
-                            }
-
-                            // Split at colon, use second item in the array
-                            String id = wholeID.split(":")[1];
-
-                            String[] column = {MediaStore.Images.Media.DATA};
-
-
-                            // where id is equal to
-                            String sel = MediaStore.Images.Media._ID + "=?";
-
-                            Cursor cursor = AddVegetableStockActivity.this
-                                    .getContentResolver()
-                                    .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                                            column, sel, new String[]{id},
-                                            null);
-
-                            String filePath = "";
-
-                            int columnIndex = cursor.getColumnIndex(column[0]);
-
-                            if (cursor.moveToFirst()) {
-                                filePath = cursor.getString(columnIndex);
-                            }
-
-                            cursor.close();
-
-                            selectedImagePath = filePath;
-                        } else {
-                            selectedImagePath = selectedImageUri.getPath();
-                        }
-
-                        if (selectedImagePath != null) {
-                            decodeFile(selectedImagePath);
-                            file = new File(selectedImagePath);
-                        } else {
-                            Toast.makeText(AddVegetableStockActivity.this,
-                                    "Could not retrieve the selected image",
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    } catch (Exception e) {
-                        Toast.makeText(AddVegetableStockActivity.this,
-                                "Could not retrieve the selected image",
-                                Toast.LENGTH_LONG).show();
-                        Log.e(e.getClass().getName(), e.getMessage(), e);
-                    }
-                }
-                break;
-        }
     }
 
-    @Override
-    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+    private void uploadImage() {
 
+        if (selectedImageUri != null) {
+            final ProgressDialog progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading Image...");
+            progressDialog.show();
+
+            StorageReference ref = storageReference.child("vegetables/" + UUID.randomUUID().toString());
+            ref.putFile(selectedImageUri)
+                    .addOnSuccessListener(taskSnapshot -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddVegetableStockActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnFailureListener(e -> {
+                        progressDialog.dismiss();
+                        Toast.makeText(AddVegetableStockActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    })
+                    .addOnProgressListener(taskSnapshot -> {
+                        double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
+                                .getTotalByteCount());
+                        progressDialog.setMessage("Done " + (int) progress + "%");
+                    });
+        }
     }
 
     @Override
@@ -464,92 +507,19 @@ public class AddVegetableStockActivity extends AppCompatActivity implements Load
         return super.onOptionsItemSelected(item);
     }
 
-    private void uploadImage() {
-
-        if (selectedImageUri != null) {
-            final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
-            progressDialog.show();
-
-            StorageReference ref = storageReference.child("vegetables/" + UUID.randomUUID().toString());
-            ref.putFile(selectedImageUri)
-                    .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            progressDialog.dismiss();
-                            Toast.makeText(AddVegetableStockActivity.this, "Uploaded", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
-                            Toast.makeText(AddVegetableStockActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Done " + (int) progress + "%");
-                        }
-                    });
-        }
-    }
-
     public void btnCancel(View view) {
-
-
+        onBackPressed();
     }
 
-//    public void btnCamera(View view) {
-//
-//    }
-//
-//    public void btnGallary(View view) {
-//    }
+    public void btnSave(View view) {
+    }
 
-    private class InvokeCameraTask extends AsyncTask<String, Void, Boolean> {
-        private File imageFile;
-        private ProgressDialog progressDialog;
-
-        public InvokeCameraTask(File imageFile) {
-            this.imageFile = imageFile;
-            progressDialog = new ProgressDialog(AddVegetableStockActivity.this);
-            progressDialog.setMessage("Loading...");
-        }
-
+    private class addVegetableTask extends AsyncTask<Vegetable, Void, Void> {
         @Override
-        protected void onPreExecute() {
-            progressDialog.show();
-        }
-
-        @Override
-        protected Boolean doInBackground(String... cameraPhotoPathArray) {
-                            /*editor.putString(Configs.PREFS_CAMERA_PHOTO_PATH_JSON,
-                                    imageFile.getAbsolutePath());
-                            editor.commit();*/
+        protected Void doInBackground(Vegetable... item) {
+            mcropRepository.addVegetable(item[0]);
             return null;
         }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            try {
-                if (progressDialog.isShowing()) {
-                    progressDialog.dismiss();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            Intent takePictureIntent = new Intent(
-                    MediaStore.ACTION_IMAGE_CAPTURE);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
-                    Uri.fromFile(imageFile));
-            startActivityForResult(takePictureIntent, TAKE_PHOTO);
-        }
     }
-
 
 }

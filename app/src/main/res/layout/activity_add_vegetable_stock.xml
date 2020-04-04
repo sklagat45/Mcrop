@@ -124,7 +124,6 @@
                     android:layout_marginBottom="10dp"
                     android:layout_weight="0.65"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/comment_textarea"
                     android:ems="10"
                     android:gravity="top|center_horizontal"
                     android:padding="0dp"
@@ -155,6 +154,7 @@
                         android:layout_toRightOf="@+id/btn_camera"
                         android:background="@drawable/btn_bg_white"
                         android:textColor="#000000"
+                        android:layout_toEndOf="@+id/btn_camera"
                         app:srcCompat="@drawable/ic_photo_library_black_24px" />
                 </RelativeLayout>
             </LinearLayout>
@@ -168,7 +168,7 @@
             android:weightSum="1">
 
             <Button
-                android:id="@+id/buttonEditBookingDetails"
+                android:id="@+id/btnCancel"
                 style="@style/allEditButtons"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
@@ -181,7 +181,7 @@
                 android:textAllCaps="false" />
 
             <Button
-                android:id="@+id/buttonSaveBooking"
+                android:id="@+id/btnSave"
                 style="@style/allSaveButtons"
                 android:layout_width="0dp"
                 android:layout_height="@dimen/button_height"
