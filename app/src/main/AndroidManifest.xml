@@ -30,7 +30,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.NutsActivity"></activity>
+        <activity android:name=".ui.MakeContactActivity"></activity>
+        <activity android:name=".ui.NutsActivity" />
         <activity android:name=".ui.FruitMarketActivity" />
         <activity android:name=".ui.DemandGraphActivity" />
         <activity android:name=".ui.AddFruitStockActivity" />

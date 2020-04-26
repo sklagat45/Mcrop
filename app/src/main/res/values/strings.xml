@@ -19,7 +19,12 @@
     <string-array name="product_arrays">
         <item>Vegetables</item>
         <item>Fruits</item>
+    </string-array>
 
+    <string-array name="payment_arrays">
+    <item>M-pesa</item>
+    <item>Visa</item>
+    <item>Master Card</item>
     </string-array>
 
 

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.MakeContactActivity">
+
+    <include
+        layout="@layout/toolbar" />
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/instagbramBtn"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/about_us" />
+
+        <Button
+            android:id="@+id/aboutBtn"
+            android:layout_width="94dp"
+            android:layout_height="50dp"
+            android:text="About Us"
+            tools:layout_editor_absoluteX="32dp"
+            tools:layout_editor_absoluteY="63dp" />
+    </LinearLayout
+>
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/phoneBtn"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/phonenumber" />
+
+        <Button
+            android:id="@+id/phone_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Help Line:"
+            tools:layout_editor_absoluteX="32dp"
+            tools:layout_editor_absoluteY="63dp" />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/email_img"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/email" />
+
+        <Button
+            android:id="@+id/emailBtn"
+            android:layout_width="96dp"
+            android:layout_height="50dp"
+            android:text="Email Us"
+            tools:layout_editor_absoluteX="32dp"
+            tools:layout_editor_absoluteY="63dp" />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/faqs_btn"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="10dp"
+            app:srcCompat="@drawable/faqs" />
+
+        <Button
+            android:id="@+id/faqsBtn"
+            android:layout_width="98dp"
+            android:layout_height="50dp"
+            android:text="FAQ's"
+            tools:layout_editor_absoluteX="32dp"
+            tools:layout_editor_absoluteY="63dp" />
+    </LinearLayout>
+
+    <LinearLayout
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/choosepayTV"
+            android:layout_width="match_parent"
+            android:layout_height="33dp"
+            android:text="Choose Payment Method" />
+
+        <Spinner
+            android:id="@+id/paymentSpinner"
+            android:layout_width="196dp"
+            android:layout_height="50dp"
+            android:entries="@array/payment_arrays"
+            android:spinnerMode="dropdown" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/followTV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Follow us On:" />
+
+        <LinearLayout
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/fbBtn"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/fui_ic_facebook_white_22dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/linkedInBtn"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/linkin" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/instagramBtn"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                app:srcCompat="@drawable/instagram" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/twitterBtn"
+                android:layout_width="80dp"
+                android:layout_height="60dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/fui_idp_button_background_twitter"
+                app:srcCompat="@drawable/fui_ic_twitter_bird_white_24dp" />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>
