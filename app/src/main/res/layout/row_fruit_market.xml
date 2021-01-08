@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/infoSection"
+        android:layout_width="412dp"
+        android:layout_height="103dp"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/imgv_photo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:contentDescription="product Image"
+            app:srcCompat="@drawable/apple" />
+
+        <LinearLayout
+            android:layout_width="412dp"
+            android:layout_height="103dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/editTextProductName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Fruit Name"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/locationETxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Location"
+                android:textSize="15sp" />
+
+            <TextView
+                android:id="@+id/descriptionETxt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/label_add_description_and_price"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>
